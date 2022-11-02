@@ -41,6 +41,7 @@ void AppendToFile(const std::string& filePath, const std::vector<unsigned char>&
 
 void PasswordToKey(std::string& password)
 {
+    OpenSSL_add_all_algorithms();
     const EVP_MD *dgst = EVP_get_digestbyname("md5");
     if (!dgst)
     {
