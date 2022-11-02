@@ -100,7 +100,7 @@ void CalculateHash(const std::vector<unsigned char>& data, std::vector<unsigned 
 void Encrypt()
 {
     std::vector<unsigned char> plainText;
-    ReadFile("plain_text", plainText);
+    ReadFile("D:/projects/cplus/Apriorit/second/BruteForce/Debug/plain_text", plainText);
     
     std::vector<unsigned char> hash;
     CalculateHash(plainText, hash);
