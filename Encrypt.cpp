@@ -11,6 +11,27 @@
 unsigned char key[EVP_MAX_KEY_LENGTH];
 unsigned char iv[EVP_MAX_IV_LENGTH];
 
+void ReadFile(const std::string& filePath, std::vector<unsigned char>& buf);
+void WriteFile(const std::string& filePath, const std::vector<unsigned char>& buf);
+void AppendToFile(const std::string& filePath, const std::vector<unsigned char>& buf);
+void PasswordToKey(std::string& password);
+void EncryptAes(const std::vector<unsigned char> plainText, std::vector<unsigned char>& chipherText);
+void Encrypt();
+
+int main()
+{
+    std::string pass = "pass";
+    try
+    {
+        PasswordToKey(pass);
+        Encrypt();
+    }
+    catch (const std::runtime_error& ex)
+    {
+        std::cerr << ex.what();
+    }
+}
+
 void ReadFile(const std::string& filePath, std::vector<unsigned char>& buf)
 {
     std::basic_fstream<unsigned char> fileStream(filePath, std::ios::binary | std::fstream::in);
@@ -42,18 +63,18 @@ void AppendToFile(const std::string& filePath, const std::vector<unsigned char>&
 void PasswordToKey(std::string& password)
 {
     OpenSSL_add_all_algorithms();
-    const EVP_MD *dgst = EVP_get_digestbyname("md5");
+    const EVP_MD* dgst = EVP_get_digestbyname("md5");
     if (!dgst)
     {
         throw std::runtime_error("no such digest");
     }
 
-    const unsigned char *salt = NULL;
+    const unsigned char* salt = NULL;
     if (!EVP_BytesToKey(EVP_aes_128_cbc(), EVP_md5(), salt,
         reinterpret_cast<unsigned char*>(&password[0]),
         password.size(), 1, key, iv))
     {
-        throw std::runtime_error("EVP_BytesToKey failed");        
+        throw std::runtime_error("EVP_BytesToKey failed");
     }
 }
 
@@ -79,7 +100,7 @@ void EncryptAes(const std::vector<unsigned char> plainText, std::vector<unsigned
     }
     chipherTextSize += lastPartLen;
     chipherTextBuf.erase(chipherTextBuf.begin() + chipherTextSize, chipherTextBuf.end());
-  
+
     chipherText.swap(chipherTextBuf);
 
     EVP_CIPHER_CTX_free(ctx);
@@ -100,29 +121,16 @@ void CalculateHash(const std::vector<unsigned char>& data, std::vector<unsigned 
 void Encrypt()
 {
     std::vector<unsigned char> plainText;
-    ReadFile("D:/projects/cplus/Apriorit/second/BruteForce/Debug/plain_text", plainText);
-    
+    std::string path = "D:/projects/cplus/Apriorit/second/BruteForce/Debug/";
+    ReadFile(path + "plain_text", plainText);
+
     std::vector<unsigned char> hash;
     CalculateHash(plainText, hash);
-    
+
     std::vector<unsigned char> chipherText;
     EncryptAes(plainText, chipherText);
 
-    WriteFile("chipher_text", chipherText);
+    WriteFile(path + "chipher_text", chipherText);
 
-    AppendToFile("chipher_text", hash);
-}
-
-int main()
-{
-    std::string pass = "pass";
-    try
-    {
-        PasswordToKey(pass);
-        Encrypt();
-    }
-    catch (const std::runtime_error& ex)
-    {
-        std::cerr << ex.what();
-    }
+    AppendToFile(path + "chipher_text", hash);
 }
