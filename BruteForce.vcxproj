@@ -151,11 +151,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AlgorithmsWrapper.cpp" />
-    <ClCompile Include="Encrypt.cpp" />
+    <ClCompile Include="AlgorithmsBase.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Md_5Algorithm.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AlgorithmsWrapper.h" />
+    <ClInclude Include="AlgorithmsBase.h" />
+    <ClInclude Include="Md_5Algorithm.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

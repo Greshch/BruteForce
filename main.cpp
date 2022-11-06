@@ -9,6 +9,8 @@
 #include <openssl/aes.h>
 #include "openssl/sha.h"
 
+#include "AlgorithmsBase.h"
+
 unsigned char key[EVP_MAX_KEY_LENGTH];
 unsigned char iv[EVP_MAX_IV_LENGTH];
 
@@ -40,6 +42,10 @@ int main()
 
         //Decrypt();
         Decrypt(nameDecryptedText, nameEncryptedText);
+
+        /*AlgorithmsBase wrapper;
+        wrapper.SetKey(key);
+        wrapper.GetKey();*/
     }
     catch (const std::runtime_error& ex)
     {

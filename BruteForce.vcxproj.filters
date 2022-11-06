@@ -15,15 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Encrypt.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AlgorithmsWrapper.cpp">
+    <ClCompile Include="AlgorithmsBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Md_5Algorithm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AlgorithmsWrapper.h">
+    <ClInclude Include="AlgorithmsBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Md_5Algorithm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
