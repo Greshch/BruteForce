@@ -18,9 +18,11 @@ void AppendToFile(const std::string& filePath, const std::vector<unsigned char>&
 void PasswordToKey(std::string& password);
 void EncryptAes(const std::vector<unsigned char> plainText, std::vector<unsigned char>& chipherText);
 void Encrypt();
+void Encrypt(const std::string& filePathDest, const std::string& filePathSrc);
 
 
 void Decrypt();
+void Decrypt(const std::string& filePathDest, const std::string& filePathSrc);
 void DecryptAes(const std::vector<unsigned char> chipherText, std::vector<unsigned char>& decryptText);
 
 int main()
@@ -139,6 +141,18 @@ void Encrypt()
     AppendToFile(path + "chipher_text", hash);
 }
 
+void Encrypt(const std::string& filePathDest, const std::string& filePathSrc)
+{
+    std::vector<unsigned char> plainText; 
+    ReadFile(filePathSrc, plainText);
+    std::vector<unsigned char> hash;
+    CalculateHash(plainText, hash);
+    std::vector<unsigned char> chipherText;
+    EncryptAes(plainText, chipherText);
+    WriteFile(filePathDest, chipherText);
+    AppendToFile(filePathDest, hash);
+}
+
 void Decrypt()
 {
     std::vector<unsigned char> chiferText;
@@ -149,6 +163,16 @@ void Decrypt()
     std::vector<unsigned char> decryptedText;
     DecryptAes(chiferText, decryptedText);
     WriteFile(path + "decrypt_text", decryptedText);
+}
+
+void Decrypt(const std::string& filePathDest, const std::string& filePathSrc)
+{
+    std::vector<unsigned char> chiferText;
+    ReadFile(filePathSrc, chiferText);
+    chiferText.erase(chiferText.end() - AES_BLOCK_SIZE * 2, chiferText.end());
+    std::vector<unsigned char> decryptedText;
+    DecryptAes(chiferText, decryptedText);
+    WriteFile(filePathDest, decryptedText);
 }
 
 void DecryptAes(const std::vector<unsigned char> chipherText, std::vector<unsigned char>& decryptText)
