@@ -4,19 +4,19 @@
 #include <exception>
 #include <iostream>
 #include <algorithm>
+#include <memory>
 
 #include "openssl/evp.h"
 #include <openssl/aes.h>
 #include "openssl/sha.h"
 
 #include "AlgorithmsBase.h"
+#include "Md_5Algorithm.h"
+#include "FileWorks.h"
 
 unsigned char key[EVP_MAX_KEY_LENGTH];
 unsigned char iv[EVP_MAX_IV_LENGTH];
 
-void ReadFile(const std::string& filePath, std::vector<unsigned char>& buf);
-void WriteFile(const std::string& filePath, const std::vector<unsigned char>& buf);
-void AppendToFile(const std::string& filePath, const std::vector<unsigned char>& buf);
 void PasswordToKey(std::string& password);
 void EncryptAes(const std::vector<unsigned char> plainText, std::vector<unsigned char>& chipherText);
 void Encrypt();
@@ -26,6 +26,8 @@ void Encrypt(const std::string& filePathDest, const std::string& filePathSrc);
 void Decrypt();
 void Decrypt(const std::string& filePathDest, const std::string& filePathSrc);
 void DecryptAes(const std::vector<unsigned char> chipherText, std::vector<unsigned char>& decryptText);
+
+void CalculateHash(const std::vector<unsigned char>& data, std::vector<unsigned char>& hash);
 
 int main()
 {
@@ -43,42 +45,13 @@ int main()
         //Decrypt();
         Decrypt(nameDecryptedText, nameEncryptedText);
 
-        /*AlgorithmsBase wrapper;
-        wrapper.SetKey(key);
-        wrapper.GetKey();*/
+        std::unique_ptr<AlgorithmsBase> algo(new Md_5Algorithm);
+        algo.get()->PasswordToKey(pass);
     }
     catch (const std::runtime_error& ex)
     {
         std::cerr << ex.what();
     }
-}
-
-void ReadFile(const std::string& filePath, std::vector<unsigned char>& buf)
-{
-    std::basic_fstream<unsigned char> fileStream(filePath, std::ios::binary | std::fstream::in);
-    if (!fileStream.is_open())
-    {
-        throw std::runtime_error("Can not open file " + filePath);
-    }
-
-    buf.clear();
-    buf.insert(buf.begin(), std::istreambuf_iterator<unsigned char>(fileStream), std::istreambuf_iterator<unsigned char>());
-
-    fileStream.close();
-}
-
-void WriteFile(const std::string& filePath, const std::vector<unsigned char>& buf)
-{
-    std::basic_ofstream<unsigned char> fileStream(filePath, std::ios::binary);
-    fileStream.write(&buf[0], buf.size());
-    fileStream.close();
-}
-
-void AppendToFile(const std::string& filePath, const std::vector<unsigned char>& buf)
-{
-    std::basic_ofstream<unsigned char> fileStream(filePath, std::ios::binary | std::ios::app);
-    fileStream.write(&buf[0], buf.size());
-    fileStream.close();
 }
 
 void PasswordToKey(std::string& password)

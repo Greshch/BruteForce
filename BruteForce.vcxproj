@@ -152,11 +152,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AlgorithmsBase.cpp" />
+    <ClCompile Include="FileWorks.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Md_5Algorithm.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlgorithmsBase.h" />
+    <ClInclude Include="FileWorks.h" />
     <ClInclude Include="Md_5Algorithm.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
