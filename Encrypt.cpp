@@ -3,6 +3,7 @@
 #include <fstream>
 #include <exception>
 #include <iostream>
+#include <algorithm>
 
 #include "openssl/evp.h"
 #include <openssl/aes.h>
@@ -18,6 +19,10 @@ void PasswordToKey(std::string& password);
 void EncryptAes(const std::vector<unsigned char> plainText, std::vector<unsigned char>& chipherText);
 void Encrypt();
 
+
+void Decrypt();
+void DecryptAes(const std::vector<unsigned char> chipherText, std::vector<unsigned char>& decryptText);
+
 int main()
 {
     std::string pass = "pass";
@@ -25,6 +30,8 @@ int main()
     {
         PasswordToKey(pass);
         Encrypt();
+
+        Decrypt();
     }
     catch (const std::runtime_error& ex)
     {
@@ -102,7 +109,6 @@ void EncryptAes(const std::vector<unsigned char> plainText, std::vector<unsigned
     chipherTextBuf.erase(chipherTextBuf.begin() + chipherTextSize, chipherTextBuf.end());
 
     chipherText.swap(chipherTextBuf);
-
     EVP_CIPHER_CTX_free(ctx);
 }
 
@@ -114,7 +120,6 @@ void CalculateHash(const std::vector<unsigned char>& data, std::vector<unsigned 
     SHA256_Init(&sha256);
     SHA256_Update(&sha256, &data[0], data.size());
     SHA256_Final(&hashTmp[0], &sha256);
-
     hash.swap(hashTmp);
 }
 
@@ -123,7 +128,6 @@ void Encrypt()
     std::vector<unsigned char> plainText;
     std::string path = "D:/projects/cplus/Apriorit/second/BruteForce/Debug/";
     ReadFile(path + "plain_text", plainText);
-
     std::vector<unsigned char> hash;
     CalculateHash(plainText, hash);
 
@@ -133,4 +137,39 @@ void Encrypt()
     WriteFile(path + "chipher_text", chipherText);
 
     AppendToFile(path + "chipher_text", hash);
+}
+
+void Decrypt()
+{
+    std::vector<unsigned char> chiferText;
+    std::string path = "D:/projects/cplus/Apriorit/second/BruteForce/Debug/";
+    ReadFile(path + "chipher_text", chiferText);
+
+    chiferText.erase(chiferText.end() - AES_BLOCK_SIZE * 2, chiferText.end());
+    std::vector<unsigned char> decryptedText;
+    DecryptAes(chiferText, decryptedText);
+}
+
+void DecryptAes(const std::vector<unsigned char> chipherText, std::vector<unsigned char>& decryptText)
+{
+    EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
+
+    if (!EVP_DecryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv))
+    {
+        throw std::runtime_error("DecryptInit error");
+    }
+    std::vector<unsigned char> decryptTextBuf(chipherText.size());
+    int decryptTextSize = 0;
+    if (!EVP_DecryptUpdate(ctx, &decryptTextBuf[0], &decryptTextSize, &chipherText[0], chipherText.size())) {
+        EVP_CIPHER_CTX_free(ctx);
+        throw std::runtime_error("Decrypt error");
+    }
+    int lastPartLen = 0;
+    if (!EVP_DecryptFinal_ex(ctx, &decryptTextBuf[0] + decryptTextSize, &lastPartLen)) {
+        EVP_CIPHER_CTX_free(ctx);
+        throw std::runtime_error("DecryptFinal error");
+    }
+    decryptTextBuf.erase(decryptTextBuf.begin() + decryptTextSize + lastPartLen, decryptTextBuf.end());
+    decryptText.swap(decryptTextBuf);
+    EVP_CIPHER_CTX_free(ctx);
 }
