@@ -28,15 +28,15 @@ void DecryptAes(const std::vector<unsigned char> chipherText, std::vector<unsign
 int main()
 {
     std::string pass = "pass";
-    std::string foldersPath = "D:/projects/cplus/Apriorit/second/BruteForce/Debug/";
-    std::string nameSimpleText = foldersPath + "plain_text";
+    std::string foldersPath = "D:/projects/cplus/Apriorit/second/BruteForce/";
+    //std::string nameSimpleText = foldersPath + "plain_text";
     std::string nameEncryptedText = foldersPath + "chipher_text";
     std::string nameDecryptedText = foldersPath + "decrypted_text";
     try
     {
         PasswordToKey(pass);
         //Encrypt();
-        Encrypt(nameEncryptedText, nameSimpleText);
+        //Encrypt(nameEncryptedText, nameSimpleText);
 
         //Decrypt();
         Decrypt(nameDecryptedText, nameEncryptedText);
