@@ -28,12 +28,18 @@ void DecryptAes(const std::vector<unsigned char> chipherText, std::vector<unsign
 int main()
 {
     std::string pass = "pass";
+    std::string foldersPath = "D:/projects/cplus/Apriorit/second/BruteForce/Debug/";
+    std::string nameSimpleText = foldersPath + "plain_text";
+    std::string nameEncryptedText = foldersPath + "chipher_text";
+    std::string nameDecryptedText = foldersPath + "decrypted_text";
     try
     {
         PasswordToKey(pass);
-        Encrypt();
+        //Encrypt();
+        Encrypt(nameEncryptedText, nameSimpleText);
 
-        Decrypt();
+        //Decrypt();
+        Decrypt(nameDecryptedText, nameEncryptedText);
     }
     catch (const std::runtime_error& ex)
     {
@@ -162,7 +168,7 @@ void Decrypt()
     chiferText.erase(chiferText.end() - AES_BLOCK_SIZE * 2, chiferText.end());
     std::vector<unsigned char> decryptedText;
     DecryptAes(chiferText, decryptedText);
-    WriteFile(path + "decrypt_text", decryptedText);
+    WriteFile(path + "decrypted_text", decryptedText);
 }
 
 void Decrypt(const std::string& filePathDest, const std::string& filePathSrc)
