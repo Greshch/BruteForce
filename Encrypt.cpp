@@ -148,6 +148,7 @@ void Decrypt()
     chiferText.erase(chiferText.end() - AES_BLOCK_SIZE * 2, chiferText.end());
     std::vector<unsigned char> decryptedText;
     DecryptAes(chiferText, decryptedText);
+    WriteFile(path + "decrypt_text", decryptedText);
 }
 
 void DecryptAes(const std::vector<unsigned char> chipherText, std::vector<unsigned char>& decryptText)
