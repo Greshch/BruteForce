@@ -10,5 +10,7 @@ public:
 
 protected:
 	void CalculateHash(const std::vector<unsigned char>& data, std::vector<unsigned char>& hash) override;
+	void EncryptAes(const std::vector<unsigned char> plainText, std::vector<unsigned char>& chipherText) override;
+	void DecryptAes(const std::vector<unsigned char> chipherText, std::vector<unsigned char>& decryptText) override;
 };
 
