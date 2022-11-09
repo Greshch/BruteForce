@@ -8,7 +8,7 @@
 
 
 int main() {
-    std::string pass = "pass";
+    std::string pass = "3";
     std::string foldersPath = "D:/projects/cplus/Apriorit/second/BruteForce/Debug/";
     std::string namePlainText = foldersPath + "plain_text";
     std::string nameEncryptedText = foldersPath + "chipher_text";
@@ -16,9 +16,9 @@ int main() {
     try {
         std::unique_ptr<AlgorithmsBase> algo(new Md_5Algorithm);
         algo.get()->SetPass(pass);
-        algo.get()->PasswordToKey();
-        algo.get()->Encrypt(nameEncryptedText, namePlainText);
-        algo.get()->Decrypt(nameDecryptedText, nameEncryptedText);
+        //algo.get()->PasswordToKey();
+        //algo.get()->Encrypt(nameEncryptedText, namePlainText);
+        //algo.get()->Decrypt(nameDecryptedText, nameEncryptedText);
     }
     catch (const std::runtime_error& ex) {
         std::cerr << ex.what();

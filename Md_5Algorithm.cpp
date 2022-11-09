@@ -39,6 +39,9 @@ void Md_5Algorithm::Decrypt(const std::string& filePathDest, const std::string& 
     WriteFile(filePathDest, decryptedText);
 }
 
+void Md_5Algorithm::SetPass() {
+}
+
 void Md_5Algorithm::CalculateHash(const std::vector<unsigned char>& data, std::vector<unsigned char>& hash) {
     std::vector<unsigned char> hashTmp(SHA256_DIGEST_LENGTH);
     SHA256_CTX sha256;
@@ -95,4 +98,12 @@ void Md_5Algorithm::DecryptAes(const std::vector<unsigned char> chipherText, std
     decryptTextBuf.erase(decryptTextBuf.begin() + decryptTextSize + lastPartLen, decryptTextBuf.end());
     decryptText.swap(decryptTextBuf);
     EVP_CIPHER_CTX_free(ctx);
+}
+
+bool Md_5Algorithm::CheckPass(std::string const& pass) {
+    return false;
+}
+
+bool Md_5Algorithm::CheckHashSum(std::vector<int> const& hash) {
+    return false;
 }
