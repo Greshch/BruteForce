@@ -4,19 +4,17 @@
 #include <exception>
 #include <iostream>
 
-void Md_5Algorithm::PasswordToKey(std::string& password) {
-    OpenSSL_add_all_algorithms();
-    const EVP_MD* dgst = EVP_get_digestbyname("md5");
-    if (!dgst)
-    {
+Md_5Algorithm::Md_5Algorithm() : m_dgst(EVP_get_digestbyname("md5")) {
+    if (!m_dgst) {
         throw std::runtime_error("no such digest");
     }
+}
 
+void Md_5Algorithm::PasswordToKey(std::string& password) {
     const unsigned char* salt = NULL;
     if (!EVP_BytesToKey(EVP_aes_128_cbc(), EVP_md5(), salt,
         reinterpret_cast<unsigned char*>(&password[0]),
-        password.size(), 1, m_key, m_iv))
-    {
+        password.size(), 1, m_key, m_iv)) {
         throw std::runtime_error("EVP_BytesToKey failed");
     }
 }

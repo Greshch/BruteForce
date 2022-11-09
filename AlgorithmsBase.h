@@ -10,7 +10,7 @@ public:
 	virtual void Encrypt(const std::string& filePathDest, const std::string& filePathSrc) = 0;
 	virtual void Decrypt(const std::string& filePathDest, const std::string& filePathSrc) = 0;
 
-	AlgorithmsBase() = default;
+	AlgorithmsBase();
 	~AlgorithmsBase() = default;
 
 protected:

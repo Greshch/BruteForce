@@ -12,4 +12,6 @@
 #include <openssl/aes.h>
 #include "openssl/sha.h"
 
-
+AlgorithmsBase::AlgorithmsBase() {
+	OpenSSL_add_all_algorithms();
+}
