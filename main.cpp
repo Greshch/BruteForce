@@ -13,14 +13,12 @@ int main()
     std::string foldersPath = "D:/projects/cplus/Apriorit/second/BruteForce/Debug/";
     std::string nameEncryptedText = foldersPath + "chipher_text";
     std::string nameDecryptedText = foldersPath + "decrypted_text";
-    try
-    {
+    try {
         std::unique_ptr<AlgorithmsBase> algo(new Md_5Algorithm);
         algo.get()->PasswordToKey(pass);
         algo.get()->Decrypt(nameDecryptedText, nameEncryptedText);
     }
-    catch (const std::runtime_error& ex)
-    {
+    catch (const std::runtime_error& ex) {
         std::cerr << ex.what();
     }
 }
