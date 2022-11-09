@@ -34,7 +34,7 @@ void Md_5Algorithm::Decrypt(const std::string& filePathDest, const std::string& 
     WriteFile(filePathDest, decryptedText);
 }
 
-void Md_5Algorithm::SetPass() {
+void Md_5Algorithm::SetPass(std::string const& fileSrc) {
 
 }
 
@@ -105,10 +105,10 @@ void Md_5Algorithm::PasswordToKey(std::string& pass) {
     }
 }
 
-bool Md_5Algorithm::CheckPass(std::string const& pass) {
+bool Md_5Algorithm::CheckPass(std::string const& fileSrc, std::string const& pass) {
     return false;
 }
 
-bool Md_5Algorithm::CheckHashSum(std::vector<int> const& hash) {
+bool Md_5Algorithm::CheckHashSum(std::string const& fileSrc, std::vector<int> const& hash) {
     return false;
 }

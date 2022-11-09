@@ -12,7 +12,7 @@ public:
 	void Encrypt(const std::string& filePathDest, const std::string& filePathSrc) override;
 	void Decrypt(const std::string& filePathDest, const std::string& filePathSrc) override;
 
-	void SetPass() override;
+	void SetPass(std::string const& fileSrc) override;
 
 protected:
 	void CalculateHash(const std::vector<unsigned char>& data, std::vector<unsigned char>& hash) override;
@@ -26,7 +26,7 @@ private:
 	void PasswordToKey(std::string& pass);
 
 protected:
-	bool CheckPass(std::string const& pass) override;
-	bool CheckHashSum(std::vector<int> const& hash) override;
+	bool CheckPass(std::string const& fileSrc, std::string const& pass) override;
+	bool CheckHashSum(std::string const& fileSrc, std::vector<int> const& hash) override;
 };
 
