@@ -8,7 +8,7 @@
 
 
 int main() {
-    std::string pass = "4";
+    std::string pass = "5";
     std::string foldersPath = "D:/projects/cplus/Apriorit/second/BruteForce/Debug/";
     std::string namePlainText = foldersPath + "plain_text";
     std::string nameEncryptedText = foldersPath + "chipher_text";

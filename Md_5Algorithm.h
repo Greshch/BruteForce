@@ -16,17 +16,18 @@ public:
 
 protected:
 	void CalculateHash(const std::vector<unsigned char>& data, std::vector<unsigned char>& hash) override;
-	void EncryptAes(const std::vector<unsigned char> plainText, std::vector<unsigned char>& chipherText) override;
-	void DecryptAes(const std::vector<unsigned char> chipherText, std::vector<unsigned char>& decryptText) override;
+	void EncryptAes(const std::vector<unsigned char> & plainText, std::vector<unsigned char>& chipherText) override;
+	void DecryptAes(const std::vector<unsigned char> & chipherText, std::vector<unsigned char>& decryptText) override;
 
 private:
 	const EVP_MD* m_dgst;
 
 private:
 	void PasswordToKey(std::string& pass);
+	bool DecryptAes(const std::vector<unsigned char> & chipherText);
 
 protected:
-	bool CheckPass(std::string const& fileSrc, std::string const& pass) override;
+	bool CheckPass(const std::vector<unsigned char> & chipherText) override;
 	bool CheckHashSum(std::string const& fileSrc, std::vector<int> const& hash) override;
 };
 
