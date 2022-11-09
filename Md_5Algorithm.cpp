@@ -11,12 +11,7 @@ Md_5Algorithm::Md_5Algorithm() : m_dgst(EVP_get_digestbyname("md5")) {
 }
 
 void Md_5Algorithm::PasswordToKey() {
-    const unsigned char* salt = NULL;
-    if (!EVP_BytesToKey(EVP_aes_128_cbc(), EVP_md5(), salt,
-        reinterpret_cast<unsigned char*>(&m_pass[0]),
-        m_pass.size(), 1, m_key, m_iv)) {
-        throw std::runtime_error("EVP_BytesToKey failed");
-    }
+    PasswordToKey(m_pass);
 }
 
 void Md_5Algorithm::Encrypt(const std::string& filePathDest, const std::string& filePathSrc) {
@@ -40,6 +35,7 @@ void Md_5Algorithm::Decrypt(const std::string& filePathDest, const std::string& 
 }
 
 void Md_5Algorithm::SetPass() {
+
 }
 
 void Md_5Algorithm::CalculateHash(const std::vector<unsigned char>& data, std::vector<unsigned char>& hash) {
@@ -98,6 +94,15 @@ void Md_5Algorithm::DecryptAes(const std::vector<unsigned char> chipherText, std
     decryptTextBuf.erase(decryptTextBuf.begin() + decryptTextSize + lastPartLen, decryptTextBuf.end());
     decryptText.swap(decryptTextBuf);
     EVP_CIPHER_CTX_free(ctx);
+}
+
+void Md_5Algorithm::PasswordToKey(std::string& pass) {
+    const unsigned char* salt = NULL;
+    if (!EVP_BytesToKey(EVP_aes_128_cbc(), EVP_md5(), salt,
+        reinterpret_cast<unsigned char*>(&pass[0]),
+        pass.size(), 1, m_key, m_iv)) {
+        throw std::runtime_error("EVP_BytesToKey failed");
+    }
 }
 
 bool Md_5Algorithm::CheckPass(std::string const& pass) {

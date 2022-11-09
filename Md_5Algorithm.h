@@ -22,6 +22,9 @@ protected:
 private:
 	const EVP_MD* m_dgst;
 
+private:
+	void PasswordToKey(std::string& pass);
+
 protected:
 	bool CheckPass(std::string const& pass) override;
 	bool CheckHashSum(std::vector<int> const& hash) override;
