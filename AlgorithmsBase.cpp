@@ -12,6 +12,14 @@
 #include <openssl/aes.h>
 #include "openssl/sha.h"
 
+void AlgorithmsBase::SetPass(std::string const& pass) {
+	m_pass = pass;
+}
+
+std::string const& AlgorithmsBase::GetPass() const {
+	return m_pass;
+}
+
 AlgorithmsBase::AlgorithmsBase() {
 	OpenSSL_add_all_algorithms();
 }

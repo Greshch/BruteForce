@@ -6,7 +6,7 @@ class Md_5Algorithm : public AlgorithmsBase {
 public:
 	Md_5Algorithm();
 
-	void PasswordToKey(std::string& password) override;
+	void PasswordToKey() override;
 	void Encrypt(const std::string& filePathDest, const std::string& filePathSrc) override;
 	void Decrypt(const std::string& filePathDest, const std::string& filePathSrc) override;
 

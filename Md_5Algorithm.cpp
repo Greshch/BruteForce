@@ -10,11 +10,11 @@ Md_5Algorithm::Md_5Algorithm() : m_dgst(EVP_get_digestbyname("md5")) {
     }
 }
 
-void Md_5Algorithm::PasswordToKey(std::string& password) {
+void Md_5Algorithm::PasswordToKey() {
     const unsigned char* salt = NULL;
     if (!EVP_BytesToKey(EVP_aes_128_cbc(), EVP_md5(), salt,
-        reinterpret_cast<unsigned char*>(&password[0]),
-        password.size(), 1, m_key, m_iv)) {
+        reinterpret_cast<unsigned char*>(&m_pass[0]),
+        m_pass.size(), 1, m_key, m_iv)) {
         throw std::runtime_error("EVP_BytesToKey failed");
     }
 }
