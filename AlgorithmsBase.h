@@ -10,7 +10,7 @@ public:
 	virtual void Encrypt(const std::string& filePathDest, const std::string& filePathSrc) = 0;
 	virtual void Decrypt(const std::string& filePathDest, const std::string& filePathSrc) = 0;
 
-	void SetPass(std::string const& pass);
+	void SetPassword(std::string const& pass);
 	std::string const& GetPass() const;
 
 	AlgorithmsBase();

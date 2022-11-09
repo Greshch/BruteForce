@@ -12,7 +12,7 @@
 #include <openssl/aes.h>
 #include "openssl/sha.h"
 
-void AlgorithmsBase::SetPass(std::string const& pass) {
+void AlgorithmsBase::SetPassword(std::string const& pass) {
 	m_pass = pass;
 }
 

@@ -40,11 +40,15 @@ void Md_5Algorithm::SetPass(std::string const& filePathSrc) {
     chiferText.erase(chiferText.end() - AES_BLOCK_SIZE * 2, chiferText.end());
 
     std::string pass;
-    char cur = '0';
-    pass = "";
-    pass += cur;
-    PasswordToKey(pass);
-    bool isDecrepted = CheckPass(chiferText);
+    
+    
+    bool isDecrepted = false;
+    for (char cur = '0'; !isDecrepted; ++cur) {
+        pass = "";
+        pass += cur;
+        PasswordToKey(pass);
+        isDecrepted = CheckPass(chiferText);
+    }
 }
 
 void Md_5Algorithm::CalculateHash(const std::vector<unsigned char>& data, std::vector<unsigned char>& hash) {
@@ -135,6 +139,7 @@ bool Md_5Algorithm::DecryptAes(const std::vector<unsigned char> & chipherText) {
     }
     decryptTextBuf.erase(decryptTextBuf.begin() + decryptTextSize + lastPartLen, decryptTextBuf.end());
     EVP_CIPHER_CTX_free(ctx);
+    return true;
 }
 
 bool Md_5Algorithm::CheckPass(const std::vector<unsigned char> & chipherText) {

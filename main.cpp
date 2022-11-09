@@ -15,10 +15,11 @@ int main() {
     std::string nameDecryptedText = foldersPath + "decrypted_text";
     try {
         std::unique_ptr<AlgorithmsBase> algo(new Md_5Algorithm);
-        algo.get()->SetPass(pass);
+        algo.get()->SetPassword(pass);
         algo.get()->PasswordToKey();
-        algo.get()->Encrypt(nameEncryptedText, namePlainText);
-        algo.get()->Decrypt(nameDecryptedText, nameEncryptedText);
+        //algo.get()->Encrypt(nameEncryptedText, namePlainText);
+        //algo.get()->Decrypt(nameDecryptedText, nameEncryptedText);
+        dynamic_cast<IHack*>(algo.get())->SetPass(nameEncryptedText);
     }
     catch (const std::runtime_error& ex) {
         std::cerr << ex.what();
