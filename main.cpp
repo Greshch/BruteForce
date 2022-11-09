@@ -10,7 +10,7 @@
 int main()
 {
     std::string pass = "pass";
-    std::string foldersPath = "D:/projects/cplus/Apriorit/second/BruteForce/Debug/";
+    std::string foldersPath = "D:/projects/cplus/Apriorit/second/BruteForce/";
     std::string nameEncryptedText = foldersPath + "chipher_text";
     std::string nameDecryptedText = foldersPath + "decrypted_text";
     try {
