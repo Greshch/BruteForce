@@ -29,7 +29,7 @@ void Md_5Algorithm::Encrypt(const std::string& filePathDest, const std::string& 
 void Md_5Algorithm::Decrypt(const std::string& filePathDest, const std::string& filePathSrc) {
     std::vector<unsigned char> chiferText;
     ReadFile(filePathSrc, chiferText);
-    chiferText.erase(chiferText.end() - AES_BLOCK_SIZE * 2, chiferText.end());
+    chiferText.erase(chiferText.end() - SHA256_DIGEST_LENGTH, chiferText.end());
     std::vector<unsigned char> decryptedText;
     DecryptAes(chiferText, decryptedText);
     WriteFile(filePathDest, decryptedText);
