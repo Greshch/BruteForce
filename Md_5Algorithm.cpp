@@ -4,6 +4,7 @@
 #include <openssl/aes.h>
 #include <exception>
 #include <iostream>
+#include <chrono>
 
 Md_5Algorithm::Md_5Algorithm() : m_dgst(EVP_get_digestbyname("md5")) {
     if (!m_dgst) {
@@ -38,8 +39,10 @@ void Md_5Algorithm::Decrypt(const std::string& filePathDest, const std::string& 
 void Md_5Algorithm::SetPass(std::string const& filePathSrc) {
     std::vector<unsigned char> chiferText;
     ReadFile(filePathSrc, chiferText);
-    chiferText.erase(chiferText.end() - AES_BLOCK_SIZE * 2, chiferText.end());
-
+    std::vector<unsigned char> orgiginHash;
+    GetHash(orgiginHash, chiferText);
+    chiferText.erase(chiferText.end() - SHA256_DIGEST_LENGTH, chiferText.end());
+    
     std::string pass;
     bool isDecrepted = false;
     PasswordGenerator bruteForceAttack;
@@ -52,23 +55,37 @@ void Md_5Algorithm::SetPass(std::string const& filePathSrc) {
     std::vector<std::string> buffer;
     bool next = true;
     int i = 0;
+    auto begin = std::chrono::system_clock::now();
+    time_t beginTime = std::chrono::system_clock::to_time_t(begin);
     while (next)
     {
-        next = bruteForceAttack.GetPasswordBatch(buffer, 16);
+        next = bruteForceAttack.GetPasswordBatch(buffer, 1024);
         for (auto& pass : buffer)
         {
+            ++i;
             PasswordToKey(pass);
             size_t sz = pass.size();
-            if (CheckPass(chiferText) && sz == 4 && pass[0] == 'p' && pass[sz - 1] == 's')
+            if (CheckPass(chiferText))
             {
-                std::cout << ++i << "\t" << pass << std::endl;
-                Decrypt(pass, filePathSrc);
-                //Encrypt(pass + "_dec", pass);
+                Decrypt("dec", filePathSrc);
+                Encrypt("enc", "dec");
+                std::vector<unsigned char> plainText;
+                ReadFile("dec", plainText);
+                std::vector<unsigned char> hash;
+                CalculateHash(plainText, hash);
+                if (orgiginHash == hash)
+                {
+                    std::cout << i << "\t" << pass << std::endl;
+                    next = false;
+                    break;
+                }
             }
         }
-        //std::cout << std::endl;
         buffer.clear();
     }
+    auto end = std::chrono::system_clock::now();
+    time_t endTime = std::chrono::system_clock::to_time_t(end);
+    std::cout << "total time: " << endTime - beginTime << std::endl;
 }
 
 void Md_5Algorithm::CalculateHash(const std::vector<unsigned char>& data, std::vector<unsigned char>& hash) {
@@ -167,4 +184,10 @@ void Md_5Algorithm::GetHash(std::vector<unsigned char>& hash, std::string const&
 {
     ReadFile(fileSrc, hash);
     hash.erase(hash.begin(), hash.end() - SHA256_DIGEST_LENGTH); 
+}
+
+void Md_5Algorithm::GetHash(std::vector<unsigned char>& dest, std::vector<unsigned char> const& src) const
+{
+    dest.resize(SHA256_DIGEST_LENGTH);
+    std::copy(src.end() - SHA256_DIGEST_LENGTH, src.end(), dest.begin());
 }

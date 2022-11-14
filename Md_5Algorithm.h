@@ -29,5 +29,6 @@ protected:
 	bool CheckPass(const std::vector<unsigned char> & chipherText) override;
 	bool CheckHashSum(std::string const& fileSrc, std::vector<int> const& hash) override;
 	void GetHash(std::vector<unsigned char>& hash, std::string const& fileSrc) const;
+	void GetHash(std::vector<unsigned char>& dest, std::vector<unsigned char> const& src) const;
 };
 
