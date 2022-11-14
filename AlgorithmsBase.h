@@ -11,7 +11,7 @@ public:
 	virtual void Decrypt(const std::string& filePathDest, const std::string& filePathSrc) = 0;
 
 	void SetPassword(std::string const& pass);
-	std::string const& GetPass() const;
+	std::string const& GetPassword() const;
 
 	AlgorithmsBase();
 	~AlgorithmsBase() = default;

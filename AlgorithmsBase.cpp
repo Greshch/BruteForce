@@ -16,7 +16,7 @@ void AlgorithmsBase::SetPassword(std::string const& pass) {
 	m_pass = pass;
 }
 
-std::string const& AlgorithmsBase::GetPass() const {
+std::string const& AlgorithmsBase::GetPassword() const {
 	return m_pass;
 }
 

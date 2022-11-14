@@ -115,7 +115,7 @@ void PasswordGenerator::SetMaxLenOfPassword(size_t len)
     }
 }
 
-std::string& PasswordGenerator::GetPassword()
+std::string& PasswordGenerator::GetPasswordword()
 {
     Update();
     ++this->m_index;
@@ -125,6 +125,11 @@ std::string& PasswordGenerator::GetPassword()
 size_t PasswordGenerator::GetAmount() const
 {
     return m_amount;
+}
+
+size_t PasswordGenerator::GetIndex() const
+{
+    return m_index;
 }
 
 PasswordGenerator::PasswordGenerator() : PasswordGenerator(PasswordGenerator::s_length)
@@ -138,7 +143,7 @@ PasswordGenerator::PasswordGenerator(size_t buffer)
     this->m_list.reserve(buffer * 5);
 }
 
-bool PasswordGenerator::GetPasswordBatch(std::vector<std::string>& passwords, size_t passwordsCount)
+bool PasswordGenerator::GetPasswordwordBatch(std::vector<std::string>& passwords, size_t passwordsCount)
 {
     int const len = GetAmount();
     if (m_index  >= len)
@@ -152,7 +157,7 @@ bool PasswordGenerator::GetPasswordBatch(std::vector<std::string>& passwords, si
         {
             return false;
         }
-        passwords.push_back(GetPassword());
+        passwords.push_back(GetPasswordword());
     }
     return true;
 }

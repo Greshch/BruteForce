@@ -10,9 +10,10 @@ class PasswordGenerator
 public:
     PasswordGenerator();
     PasswordGenerator(size_t buffer);
-    bool GetPasswordBatch(std::vector<std::string>& passwords, size_t passwordsCount);
-    std::string& GetPassword();
+    bool GetPasswordwordBatch(std::vector<std::string>& passwords, size_t passwordsCount);
+    std::string& GetPasswordword();
     size_t GetAmount() const;
+    size_t GetIndex() const;
     void AddToVocab(char from, char to);
     void AddToVocab(std::string const& list);
     void SetMaxLenOfPassword(size_t len);

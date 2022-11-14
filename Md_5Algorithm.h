@@ -14,6 +14,9 @@ public:
 	void Decrypt(const std::string& filePathDest, const std::string& filePathSrc) override;
 
 	bool SearchPassword(std::string const& fileSrc) override;
+
+	size_t GetIndex() const;
+
 	// Inherited via IHack
 	virtual void AddToVocab(char from, char to) override;
 	virtual void AddToVocab(std::string const& str) override;

@@ -8,13 +8,21 @@
 
 
 
-int main() {
-    std::string foldersPath = "D:/projects/cplus/Apriorit/second/BruteForce/";
+int main(int argc, char** argv) {
+    //std::string foldersPath = "D:/projects/cplus/Apriorit/second/BruteForce/";
     //std::string namePlainText = foldersPath + "plain_text";
     //std::string nameEncryptedText = foldersPath + "chipher_text";
-    std::string nameEncryptedText = foldersPath + "chipher_text_brute_force";
-    std::string nameDecryptedText = foldersPath + "decrypted_text";
+    //std::string nameEncryptedText = foldersPath + "chipher_text_brute_force";
+    //std::string nameDecryptedText = foldersPath + "decrypted_text";
     try {
+        if (argc == 1)
+        {
+            throw std::runtime_error("Lack of arguments error");
+        }
+        std::string nameEncryptedText = argv[1];
+        std::string nameDecryptedText = "decrypted_text";
+
+
         Md_5Algorithm algo;
         algo.AddToVocab('a', 'z');
         algo.AddToVocab('0', '9');
@@ -30,6 +38,8 @@ int main() {
         if (isFound)
         {
             algo.Decrypt(nameDecryptedText, nameEncryptedText);
+            std::cout << "index: " << algo.GetIndex() << std::endl;
+            std::cout << "key: " << algo.GetPassword() << std::endl;
         }
     }
     catch (const std::runtime_error& ex) {

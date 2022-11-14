@@ -42,27 +42,17 @@ bool Md_5Algorithm::SearchPassword(std::string const& filePathSrc) {
     chiferText.erase(chiferText.end() - SHA256_DIGEST_LENGTH, chiferText.end());
     std::vector<unsigned char> decryptedText;
    
-    //PasswordGenerator bruteForceAttack;
-    //bruteForceAttack.AddToVocab('0', '9');
-    //bruteForceAttack.AddToVocab('a', 'z');
-    //bruteForceAttack.AddToVocab('A', 'Z');
-    //bruteForceAttack.AddToVocab("!@#$%^&*()-_+={}[]?");
-    //bruteForceAttack.SetMaxLenOfPassword(4);
-    //m_generator.SetMaxLenOfPassword(4);
-    int const len = GetAmount();
     std::vector<std::string> buffer;
     bool next = true;
-    int i = 0;
     while (next)
     {
-        next = m_generator.GetPasswordBatch(buffer, 32);
+        next = m_generator.GetPasswordwordBatch(buffer, 32);
         if (!next)
         {
             continue;
         }
         for (auto& key : buffer)
         {
-            ++i;
             PasswordToKey(key);
             if (CheckPass(chiferText))
             {
@@ -71,15 +61,19 @@ bool Md_5Algorithm::SearchPassword(std::string const& filePathSrc) {
                 CalculateHash(decryptedText, hash);
                 if (orgiginHash == hash)
                 {
-                    std::cout << i << "\t" << key << std::endl;
+                    SetPassword(key);
                     return true;
-                    break;
                 }
             }
         }
         buffer.clear();
     }
     return false;
+}
+
+size_t Md_5Algorithm::GetIndex() const
+{
+    return m_generator.GetIndex();
 }
 
 void Md_5Algorithm::CalculateHash(const std::vector<unsigned char>& data, std::vector<unsigned char>& hash) {
