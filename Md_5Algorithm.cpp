@@ -137,20 +137,17 @@ bool Md_5Algorithm::CheckPass(const std::vector<unsigned char> & chipherText) {
     EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
 
     if (!EVP_DecryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, m_key, m_iv)) {
-        //std::cout << "DecryptInit error\n";
         return false;
     }
     std::vector<unsigned char> decryptTextBuf(chipherText.size());
     int decryptTextSize = 0;
     if (!EVP_DecryptUpdate(ctx, &decryptTextBuf[0], &decryptTextSize, &chipherText[0], chipherText.size())) {
         EVP_CIPHER_CTX_free(ctx);
-        //std::cout << "Decrypt error\n";
         return false;
     }
     int lastPartLen = 0;
     if (!EVP_DecryptFinal_ex(ctx, &decryptTextBuf[0] + decryptTextSize, &lastPartLen)) {
         EVP_CIPHER_CTX_free(ctx);
-        //std::cout << "DecryptFinal error\n";
         return false;
     }
     decryptTextBuf.erase(decryptTextBuf.begin() + decryptTextSize + lastPartLen, decryptTextBuf.end());
