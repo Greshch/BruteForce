@@ -12,7 +12,7 @@ public:
 	void Encrypt(const std::string& filePathDest, const std::string& filePathSrc) override;
 	void Decrypt(const std::string& filePathDest, const std::string& filePathSrc) override;
 
-	void SetPass(std::string const& fileSrc) override;
+	bool SearchPassword(std::string const& fileSrc) override;
 
 protected:
 	void CalculateHash(const std::vector<unsigned char>& data, std::vector<unsigned char>& hash) override;

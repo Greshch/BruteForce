@@ -4,7 +4,6 @@
 #include <openssl/aes.h>
 #include <exception>
 #include <iostream>
-#include <chrono>
 
 Md_5Algorithm::Md_5Algorithm() : m_dgst(EVP_get_digestbyname("md5")) {
     if (!m_dgst) {
@@ -36,7 +35,7 @@ void Md_5Algorithm::Decrypt(const std::string& filePathDest, const std::string& 
     WriteFile(filePathDest, decryptedText);
 }
 
-void Md_5Algorithm::SetPass(std::string const& filePathSrc) {
+bool Md_5Algorithm::SearchPassword(std::string const& filePathSrc) {
     std::vector<unsigned char> chiferText;
     ReadFile(filePathSrc, chiferText);
     std::vector<unsigned char> orgiginHash;
@@ -56,11 +55,13 @@ void Md_5Algorithm::SetPass(std::string const& filePathSrc) {
     std::vector<std::string> buffer;
     bool next = true;
     int i = 0;
-    auto begin = std::chrono::system_clock::now();
-    time_t beginTime = std::chrono::system_clock::to_time_t(begin);
     while (next)
     {
         next = bruteForceAttack.GetPasswordBatch(buffer, 32);
+        if (!next)
+        {
+            continue;
+        }
         for (auto& key : buffer)
         {
             ++i;
@@ -73,16 +74,14 @@ void Md_5Algorithm::SetPass(std::string const& filePathSrc) {
                 if (orgiginHash == hash)
                 {
                     std::cout << i << "\t" << key << std::endl;
-                    next = false;
+                    return true;
                     break;
                 }
             }
         }
         buffer.clear();
     }
-    auto end = std::chrono::system_clock::now();
-    time_t endTime = std::chrono::system_clock::to_time_t(end);
-    std::cout << "total time: " << endTime - beginTime << std::endl;
+    return false;
 }
 
 void Md_5Algorithm::CalculateHash(const std::vector<unsigned char>& data, std::vector<unsigned char>& hash) {

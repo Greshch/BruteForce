@@ -4,7 +4,7 @@
 
 class IHack {
 public:
-	virtual void SetPass(std::string const& fileSrc) = 0;
+	virtual bool SearchPassword(std::string const& fileSrc) = 0;
 
 protected:
 	virtual bool CheckPass(const std::vector<unsigned char> & chipherText) = 0;
