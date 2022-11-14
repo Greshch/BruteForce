@@ -8,15 +8,15 @@
 
 
 int main() {
-    std::string pass = "5";
-    std::string foldersPath = "D:/projects/cplus/Apriorit/second/BruteForce/Debug/";
-    std::string namePlainText = foldersPath + "plain_text";
+    //std::string pass = "5";
+    std::string foldersPath = "D:/projects/cplus/Apriorit/second/BruteForce/";
+    //std::string namePlainText = foldersPath + "plain_text";
     std::string nameEncryptedText = foldersPath + "chipher_text";
-    std::string nameDecryptedText = foldersPath + "decrypted_text";
+    //std::string nameDecryptedText = foldersPath + "decrypted_text";
     try {
         std::unique_ptr<AlgorithmsBase> algo(new Md_5Algorithm);
-        algo.get()->SetPassword(pass);
-        algo.get()->PasswordToKey();
+        //algo.get()->SetPassword(pass);
+        //algo.get()->PasswordToKey();
         //algo.get()->Encrypt(nameEncryptedText, namePlainText);
         //algo.get()->Decrypt(nameDecryptedText, nameEncryptedText);
         dynamic_cast<IHack*>(algo.get())->SetPass(nameEncryptedText);

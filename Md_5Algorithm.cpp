@@ -41,21 +41,13 @@ void Md_5Algorithm::SetPass(std::string const& filePathSrc) {
     chiferText.erase(chiferText.end() - AES_BLOCK_SIZE * 2, chiferText.end());
 
     std::string pass;
-    
-    
     bool isDecrepted = false;
-    /*for (char cur = '0'; !isDecrepted; ++cur) {
-        pass = "";
-        pass += cur;
-        PasswordToKey(pass);
-        isDecrepted = CheckPass(chiferText);
-    }*/
     PasswordGenerator bruteForceAttack;
-    bruteForceAttack.SetList('0', '9');
-    //bruteForceAttack.SetList('a', 'z');
+    //bruteForceAttack.SetList('0', '9');
+    bruteForceAttack.SetList('a', 'z');
     //bruteForceAttack.SetList('A', 'Z');
     //bruteForceAttack.SetList("!@#$%^&*()-_+={}[]?");
-    bruteForceAttack.SetMaxLenOfPassword(1);
+    bruteForceAttack.SetMaxLenOfPassword(4);
     int const len = bruteForceAttack.GetAmount();
     std::vector<std::string> buffer;
     bool next = true;
@@ -64,7 +56,6 @@ void Md_5Algorithm::SetPass(std::string const& filePathSrc) {
         next = bruteForceAttack.GetPasswordBatch(buffer, 16);
         for (auto& pass : buffer)
         {
-            //std::cout << e << " ";
             PasswordToKey(pass);
             if (CheckPass(chiferText))
             {
