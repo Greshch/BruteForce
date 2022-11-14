@@ -8,6 +8,5 @@ public:
 
 protected:
 	virtual bool CheckPass(const std::vector<unsigned char> & chipherText) = 0;
-	virtual bool CheckHashSum(std::string const& fileSrc, std::vector<int> const& hash) = 0;
 };
 

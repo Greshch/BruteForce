@@ -61,11 +61,10 @@ void Md_5Algorithm::SetPass(std::string const& filePathSrc) {
     while (next)
     {
         next = bruteForceAttack.GetPasswordBatch(buffer, 32);
-        for (auto& pass : buffer)
+        for (auto& key : buffer)
         {
             ++i;
-            PasswordToKey(pass);
-            size_t sz = pass.size();
+            PasswordToKey(key);
             if (CheckPass(chiferText))
             {
                 std::vector<unsigned char> hash;
@@ -73,7 +72,7 @@ void Md_5Algorithm::SetPass(std::string const& filePathSrc) {
                 CalculateHash(decryptedText, hash);
                 if (orgiginHash == hash)
                 {
-                    std::cout << i << "\t" << pass << std::endl;
+                    std::cout << i << "\t" << key << std::endl;
                     next = false;
                     break;
                 }
@@ -172,10 +171,6 @@ bool Md_5Algorithm::CheckPass(const std::vector<unsigned char> & chipherText) {
     decryptTextBuf.erase(decryptTextBuf.begin() + decryptTextSize + lastPartLen, decryptTextBuf.end());
     EVP_CIPHER_CTX_free(ctx);
     return true;
-}
-
-bool Md_5Algorithm::CheckHashSum(std::string const& fileSrc, std::vector<int> const& hash) {
-    return false;
 }
 
 void Md_5Algorithm::GetHash(std::vector<unsigned char>& hash, std::string const& fileSrc) const
