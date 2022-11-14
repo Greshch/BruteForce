@@ -155,12 +155,14 @@
     <ClCompile Include="FileWorks.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Md_5Algorithm.cpp" />
+    <ClCompile Include="PasswordGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlgorithmsBase.h" />
     <ClInclude Include="FileWorks.h" />
     <ClInclude Include="IHack.h" />
     <ClInclude Include="Md_5Algorithm.h" />
+    <ClInclude Include="PasswordGenerator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

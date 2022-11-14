@@ -1,5 +1,6 @@
 #include "Md_5Algorithm.h"
 #include "FileWorks.h"
+#include "PasswordGenerator.h"
 #include <openssl/aes.h>
 #include <exception>
 #include <iostream>
@@ -43,11 +44,35 @@ void Md_5Algorithm::SetPass(std::string const& filePathSrc) {
     
     
     bool isDecrepted = false;
-    for (char cur = '0'; !isDecrepted; ++cur) {
+    /*for (char cur = '0'; !isDecrepted; ++cur) {
         pass = "";
         pass += cur;
         PasswordToKey(pass);
         isDecrepted = CheckPass(chiferText);
+    }*/
+    PasswordGenerator bruteForceAttack;
+    bruteForceAttack.SetList('0', '9');
+    //bruteForceAttack.SetList('a', 'z');
+    //bruteForceAttack.SetList('A', 'Z');
+    //bruteForceAttack.SetList("!@#$%^&*()-_+={}[]?");
+    bruteForceAttack.SetMaxLenOfPassword(1);
+    int const len = bruteForceAttack.GetAmount();
+    std::vector<std::string> buffer;
+    bool next = true;
+    while (next)
+    {
+        next = bruteForceAttack.GetPasswordBatch(buffer, 16);
+        for (auto& pass : buffer)
+        {
+            //std::cout << e << " ";
+            PasswordToKey(pass);
+            if (CheckPass(chiferText))
+            {
+                std::cout << pass << std::endl;
+            }
+        }
+        //std::cout << std::endl;
+        buffer.clear();
     }
 }
 
@@ -117,33 +142,29 @@ void Md_5Algorithm::PasswordToKey(std::string& pass) {
     }
 }
 
-bool Md_5Algorithm::DecryptAes(const std::vector<unsigned char> & chipherText) {
+bool Md_5Algorithm::CheckPass(const std::vector<unsigned char> & chipherText) {
     EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
 
     if (!EVP_DecryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, m_key, m_iv)) {
-        std::cout << "DecryptInit error\n";
+        //std::cout << "DecryptInit error\n";
         return false;
     }
     std::vector<unsigned char> decryptTextBuf(chipherText.size());
     int decryptTextSize = 0;
     if (!EVP_DecryptUpdate(ctx, &decryptTextBuf[0], &decryptTextSize, &chipherText[0], chipherText.size())) {
         EVP_CIPHER_CTX_free(ctx);
-        std::cout << "Decrypt error\n";
+        //std::cout << "Decrypt error\n";
         return false;
     }
     int lastPartLen = 0;
     if (!EVP_DecryptFinal_ex(ctx, &decryptTextBuf[0] + decryptTextSize, &lastPartLen)) {
         EVP_CIPHER_CTX_free(ctx);
-        std::cout << "DecryptFinal error\n";
+        //std::cout << "DecryptFinal error\n";
         return false;
     }
     decryptTextBuf.erase(decryptTextBuf.begin() + decryptTextSize + lastPartLen, decryptTextBuf.end());
     EVP_CIPHER_CTX_free(ctx);
     return true;
-}
-
-bool Md_5Algorithm::CheckPass(const std::vector<unsigned char> & chipherText) {
-    return DecryptAes(chipherText);
 }
 
 bool Md_5Algorithm::CheckHashSum(std::string const& fileSrc, std::vector<int> const& hash) {

@@ -24,7 +24,6 @@ private:
 
 private:
 	void PasswordToKey(std::string& pass);
-	bool DecryptAes(const std::vector<unsigned char> & chipherText);
 
 protected:
 	bool CheckPass(const std::vector<unsigned char> & chipherText) override;
