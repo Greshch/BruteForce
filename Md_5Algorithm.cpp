@@ -51,15 +51,19 @@ void Md_5Algorithm::SetPass(std::string const& filePathSrc) {
     int const len = bruteForceAttack.GetAmount();
     std::vector<std::string> buffer;
     bool next = true;
+    int i = 0;
     while (next)
     {
         next = bruteForceAttack.GetPasswordBatch(buffer, 16);
         for (auto& pass : buffer)
         {
             PasswordToKey(pass);
-            if (CheckPass(chiferText))
+            size_t sz = pass.size();
+            if (CheckPass(chiferText) && sz == 4 && pass[0] == 'p' && pass[sz - 1] == 's')
             {
-                std::cout << pass << std::endl;
+                std::cout << ++i << "\t" << pass << std::endl;
+                Decrypt(pass, filePathSrc);
+                //Encrypt(pass + "_dec", pass);
             }
         }
         //std::cout << std::endl;
@@ -157,4 +161,10 @@ bool Md_5Algorithm::CheckPass(const std::vector<unsigned char> & chipherText) {
 
 bool Md_5Algorithm::CheckHashSum(std::string const& fileSrc, std::vector<int> const& hash) {
     return false;
+}
+
+void Md_5Algorithm::GetHash(std::vector<unsigned char>& hash, std::string const& fileSrc) const
+{
+    ReadFile(fileSrc, hash);
+    hash.erase(hash.begin(), hash.end() - SHA256_DIGEST_LENGTH); 
 }
