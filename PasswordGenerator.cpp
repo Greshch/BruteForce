@@ -84,7 +84,7 @@ void PasswordGenerator::SetProgresion()
     m_progresion.m_Sum = 0;
 }
 
-void PasswordGenerator::SetList(char from, char to)
+void PasswordGenerator::AddToVocab(char from, char to)
 {
     for (char ch = from; ch <= to; ++ch)
     {
@@ -94,7 +94,7 @@ void PasswordGenerator::SetList(char from, char to)
     SetProgresion();
 }
 
-void PasswordGenerator::SetList(std::string const& list)
+void PasswordGenerator::AddToVocab(std::string const& list)
 {
     for (auto const& ch : list)
     {

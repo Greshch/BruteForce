@@ -7,27 +7,28 @@
 
 class PasswordGenerator
 {
-    public:
+public:
     PasswordGenerator();
     PasswordGenerator(size_t buffer);
     bool GetPasswordBatch(std::vector<std::string>& passwords, size_t passwordsCount);
     std::string& GetPassword();
     size_t GetAmount() const;
-    void SetList(char from, char to);
-    void SetList(std::string const& list);
+    void AddToVocab(char from, char to);
+    void AddToVocab(std::string const& list);
     void SetMaxLenOfPassword(size_t len);
     size_t GetListSize() const;
+    void Reset();
     virtual ~PasswordGenerator();
 
-    protected:
+protected:
     static const size_t s_length = 32;
     void Update();
     void SetFirstAndLast();
     void SetProgresion();
     void UpdateProgresion();
-    void Reset();
+    
 
-    private:
+private:
     std::string m_password;
     std::string m_list;
     size_t m_index = 0;

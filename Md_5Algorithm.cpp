@@ -1,6 +1,5 @@
 #include "Md_5Algorithm.h"
 #include "FileWorks.h"
-#include "PasswordGenerator.h"
 #include <openssl/aes.h>
 #include <exception>
 #include <iostream>
@@ -43,21 +42,20 @@ bool Md_5Algorithm::SearchPassword(std::string const& filePathSrc) {
     chiferText.erase(chiferText.end() - SHA256_DIGEST_LENGTH, chiferText.end());
     std::vector<unsigned char> decryptedText;
    
-    std::string pass;
-    bool isDecrepted = false;
-    PasswordGenerator bruteForceAttack;
-    //bruteForceAttack.SetList('0', '9');
-    bruteForceAttack.SetList('a', 'z');
-    //bruteForceAttack.SetList('A', 'Z');
-    //bruteForceAttack.SetList("!@#$%^&*()-_+={}[]?");
-    bruteForceAttack.SetMaxLenOfPassword(4);
-    int const len = bruteForceAttack.GetAmount();
+    //PasswordGenerator bruteForceAttack;
+    //bruteForceAttack.AddToVocab('0', '9');
+    //bruteForceAttack.AddToVocab('a', 'z');
+    //bruteForceAttack.AddToVocab('A', 'Z');
+    //bruteForceAttack.AddToVocab("!@#$%^&*()-_+={}[]?");
+    //bruteForceAttack.SetMaxLenOfPassword(4);
+    //m_generator.SetMaxLenOfPassword(4);
+    int const len = GetAmount();
     std::vector<std::string> buffer;
     bool next = true;
     int i = 0;
     while (next)
     {
-        next = bruteForceAttack.GetPasswordBatch(buffer, 32);
+        next = m_generator.GetPasswordBatch(buffer, 32);
         if (!next)
         {
             continue;
@@ -182,4 +180,29 @@ void Md_5Algorithm::GetHash(std::vector<unsigned char>& dest, std::vector<unsign
 {
     dest.resize(SHA256_DIGEST_LENGTH);
     std::copy(src.end() - SHA256_DIGEST_LENGTH, src.end(), dest.begin());
+}
+
+size_t Md_5Algorithm::GetAmount() const
+{
+    return m_generator.GetAmount();
+}
+
+void Md_5Algorithm::SetMaxLenOfPassword(size_t sz)
+{
+    m_generator.SetMaxLenOfPassword(sz);
+}
+
+void Md_5Algorithm::AddToVocab(char from, char to)
+{
+    m_generator.AddToVocab(from, to);
+}
+
+void Md_5Algorithm::AddToVocab(std::string const& str)
+{
+    m_generator.AddToVocab(str);
+}
+
+void Md_5Algorithm::ResetVocab()
+{
+    m_generator.Reset();
 }

@@ -14,15 +14,14 @@ int main() {
     std::string nameEncryptedText = foldersPath + "chipher_text";
     //std::string nameDecryptedText = foldersPath + "decrypted_text";
     try {
-        std::unique_ptr<AlgorithmsBase> algo(new Md_5Algorithm);
-        //algo.get()->SetPassword(pass);
-        //algo.get()->PasswordToKey();
-        //algo.get()->Encrypt(nameEncryptedText, namePlainText);
-        //algo.get()->Decrypt(nameDecryptedText, nameEncryptedText);
-
+        Md_5Algorithm algo;
+        algo.AddToVocab('a', 'z');
+        algo.SetMaxLenOfPassword(4);
         auto begin = std::chrono::system_clock::now();
         time_t beginTime = std::chrono::system_clock::to_time_t(begin);
-        dynamic_cast<IHack*>(algo.get())->SearchPassword(nameEncryptedText);
+
+        algo.SearchPassword(nameEncryptedText);
+
         auto finish = std::chrono::system_clock::now();
         time_t finishTime = std::chrono::system_clock::to_time_t(finish);
         std::cout << "time: " << finishTime - beginTime << std::endl;
