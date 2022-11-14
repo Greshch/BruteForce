@@ -42,7 +42,8 @@ void Md_5Algorithm::SetPass(std::string const& filePathSrc) {
     std::vector<unsigned char> orgiginHash;
     GetHash(orgiginHash, chiferText);
     chiferText.erase(chiferText.end() - SHA256_DIGEST_LENGTH, chiferText.end());
-    
+    std::vector<unsigned char> decryptedText;
+   
     std::string pass;
     bool isDecrepted = false;
     PasswordGenerator bruteForceAttack;
@@ -59,7 +60,7 @@ void Md_5Algorithm::SetPass(std::string const& filePathSrc) {
     time_t beginTime = std::chrono::system_clock::to_time_t(begin);
     while (next)
     {
-        next = bruteForceAttack.GetPasswordBatch(buffer, 1024);
+        next = bruteForceAttack.GetPasswordBatch(buffer, 32);
         for (auto& pass : buffer)
         {
             ++i;
@@ -67,12 +68,9 @@ void Md_5Algorithm::SetPass(std::string const& filePathSrc) {
             size_t sz = pass.size();
             if (CheckPass(chiferText))
             {
-                Decrypt("dec", filePathSrc);
-                Encrypt("enc", "dec");
-                std::vector<unsigned char> plainText;
-                ReadFile("dec", plainText);
                 std::vector<unsigned char> hash;
-                CalculateHash(plainText, hash);
+                DecryptAes(chiferText, decryptedText);
+                CalculateHash(decryptedText, hash);
                 if (orgiginHash == hash)
                 {
                     std::cout << i << "\t" << pass << std::endl;
