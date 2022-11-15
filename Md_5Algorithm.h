@@ -16,7 +16,7 @@ public:
 	void PrepearForHack(std::string const& file);
 	
 	// Inherited via IHack
-	bool SearchPassword(std::string const& file, std::vector<std::string>& balk) override;
+	bool SearchPassword(std::vector<std::string>& balk) override;
 
 protected:
 	void CalculateHash(const std::vector<unsigned char>& data, std::vector<unsigned char>& hash) override;

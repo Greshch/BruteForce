@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
         while (!isFound)
         {
             generator.GetPasswordwordBatch(balk, volBuffer);
-            isFound = algo.SearchPassword(nameEncryptedText, balk);
+            isFound = algo.SearchPassword(balk);
             balk.clear();
         }
         auto finish = std::chrono::system_clock::now();
@@ -49,6 +49,7 @@ int main(int argc, char** argv) {
         std::cout << "index: " << generator.GetIndex() << std::endl;
         std::cout << "key: " << algo.GetPassword() << std::endl;
         std::cout << "time: " << finishTime - beginTime << std::endl;
+        algo.Decrypt(nameDecryptedText, nameEncryptedText);
     }
     catch (const std::runtime_error& ex) {
         std::cerr << ex.what();

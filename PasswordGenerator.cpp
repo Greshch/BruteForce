@@ -145,7 +145,7 @@ PasswordGenerator::PasswordGenerator(size_t buffer)
 
 bool PasswordGenerator::GetPasswordwordBatch(std::vector<std::string>& passwords, size_t passwordsCount)
 {
-    int const len = GetAmount();
+    size_t const len = GetAmount();
     if (m_index  >= len)
     {
         return false;

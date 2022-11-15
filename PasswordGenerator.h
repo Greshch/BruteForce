@@ -34,8 +34,8 @@ private:
     std::string m_list;
     size_t m_index = 0;
     size_t m_amount = 0;
-    char m_first;
-    char m_last;
+    char m_first = 0;
+    char m_last = 0;
     struct Progresion {
         size_t m_n = 0;
         size_t m_cur = 1;

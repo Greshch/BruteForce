@@ -41,7 +41,7 @@ void Md_5Algorithm::PrepearForHack(std::string const& file)
     m_chiferText.erase(m_chiferText.end() - SHA256_DIGEST_LENGTH, m_chiferText.end());
 }
 
-bool Md_5Algorithm::SearchPassword(std::string const& file, std::vector<std::string>& balk)
+bool Md_5Algorithm::SearchPassword(std::vector<std::string>& balk)
 {
     for (auto& key : balk)
     {
