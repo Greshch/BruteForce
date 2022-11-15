@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
     //std::string nameDecryptedText = foldersPath + "decrypted_text";
 
     size_t const maxPasswordLen = 4;
-    size_t const volBuffer = 32;
+    size_t const volBuffer = 1024;
     try {
         if (argc == 1)
         {
@@ -33,35 +33,22 @@ int main(int argc, char** argv) {
         std::vector<std::string>  balk;
         
         Md_5Algorithm algo;
+        algo.PrepearForHack(nameEncryptedText);
         bool isFound = false;
+        auto begin = std::chrono::system_clock::now();
+        time_t beginTime = std::chrono::system_clock::to_time_t(begin);
         while (!isFound)
         {
             generator.GetPasswordwordBatch(balk, volBuffer);
             isFound = algo.SearchPassword(nameEncryptedText, balk);
-
             balk.clear();
         }
+        auto finish = std::chrono::system_clock::now();
+        time_t finishTime = std::chrono::system_clock::to_time_t(finish);
 
         std::cout << "index: " << generator.GetIndex() << std::endl;
         std::cout << "key: " << algo.GetPassword() << std::endl;
-
-        /*algo.AddToVocab('a', 'z');
-        algo.AddToVocab('0', '9');
-        algo.SetMaxLenOfPassword(4);
-        auto begin = std::chrono::system_clock::now();
-        time_t beginTime = std::chrono::system_clock::to_time_t(begin);
-
-        bool isFound = algo.SearchPassword(nameEncryptedText);
-
-        auto finish = std::chrono::system_clock::now();
-        time_t finishTime = std::chrono::system_clock::to_time_t(finish);
         std::cout << "time: " << finishTime - beginTime << std::endl;
-        if (isFound)
-        {
-            algo.Decrypt(nameDecryptedText, nameEncryptedText);
-            std::cout << "index: " << algo.GetIndex() << std::endl;
-            std::cout << "key: " << algo.GetPassword() << std::endl;
-        }*/
     }
     catch (const std::runtime_error& ex) {
         std::cerr << ex.what();

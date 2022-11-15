@@ -13,6 +13,7 @@ public:
 	void Encrypt(const std::string& filePathDest, const std::string& filePathSrc) override;
 	void Decrypt(const std::string& filePathDest, const std::string& filePathSrc) override;
 
+	void PrepearForHack(std::string const& file);
 	
 	// Inherited via IHack
 	bool SearchPassword(std::string const& file, std::vector<std::string>& balk) override;
@@ -24,10 +25,13 @@ protected:
 	
 	bool CheckPass(const std::vector<unsigned char>& chipherText) override;
 	void PasswordToKey(std::string& pass);
-	void GetHash(std::vector<unsigned char>& hash, std::string const& fileSrc) const;
 	void GetHash(std::vector<unsigned char>& dest, std::vector<unsigned char> const& src) const;
 
 private:
 	const EVP_MD* m_dgst;
+	std::vector<unsigned char> m_chiferText;
+	std::vector<unsigned char> m_originHash;
+	std::vector<unsigned char> m_curHash;
+	std::vector<unsigned char> m_decryptedText;
 };
 

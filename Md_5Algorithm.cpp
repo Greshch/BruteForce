@@ -34,45 +34,29 @@ void Md_5Algorithm::Decrypt(const std::string& filePathDest, const std::string& 
     WriteFile(filePathDest, decryptedText);
 }
 
-//bool Md_5Algorithm::SearchPassword(std::string const& filePathSrc) {
-//    std::vector<unsigned char> chiferText;
-//    ReadFile(filePathSrc, chiferText);
-//    std::vector<unsigned char> orgiginHash;
-//    GetHash(orgiginHash, chiferText);
-//    chiferText.erase(chiferText.end() - SHA256_DIGEST_LENGTH, chiferText.end());
-//    std::vector<unsigned char> decryptedText;
-//   
-//    std::vector<std::string> buffer;
-//    bool next = true;
-//    while (next)
-//    {
-//        next = m_generator.GetPasswordwordBatch(buffer, 32);
-//        if (!next)
-//        {
-//            continue;
-//        }
-//        for (auto& key : buffer)
-//        {
-//            PasswordToKey(key);
-//            if (CheckPass(chiferText))
-//            {
-//                std::vector<unsigned char> hash;
-//                DecryptAes(chiferText, decryptedText);
-//                CalculateHash(decryptedText, hash);
-//                if (orgiginHash == hash)
-//                {
-//                    SetPassword(key);
-//                    return true;
-//                }
-//            }
-//        }
-//        buffer.clear();
-//    }
-//    return false;
-//}
+void Md_5Algorithm::PrepearForHack(std::string const& file)
+{
+    ReadFile(file, m_chiferText);
+    GetHash(m_originHash, m_chiferText);
+    m_chiferText.erase(m_chiferText.end() - SHA256_DIGEST_LENGTH, m_chiferText.end());
+}
 
 bool Md_5Algorithm::SearchPassword(std::string const& file, std::vector<std::string>& balk)
 {
+    for (auto& key : balk)
+    {
+        PasswordToKey(key);
+        if (CheckPass(m_chiferText))
+        {
+            DecryptAes(m_chiferText, m_decryptedText);
+            CalculateHash(m_decryptedText, m_curHash);
+            if (m_originHash == m_curHash)
+            {
+                SetPassword(key);
+                return true;
+            }
+        }
+    }
     return false;
 }
 
@@ -162,12 +146,6 @@ bool Md_5Algorithm::CheckPass(const std::vector<unsigned char> & chipherText) {
     decryptTextBuf.erase(decryptTextBuf.begin() + decryptTextSize + lastPartLen, decryptTextBuf.end());
     EVP_CIPHER_CTX_free(ctx);
     return true;
-}
-
-void Md_5Algorithm::GetHash(std::vector<unsigned char>& hash, std::string const& fileSrc) const
-{
-    ReadFile(fileSrc, hash);
-    hash.erase(hash.begin(), hash.end() - SHA256_DIGEST_LENGTH); 
 }
 
 void Md_5Algorithm::GetHash(std::vector<unsigned char>& dest, std::vector<unsigned char> const& src) const
