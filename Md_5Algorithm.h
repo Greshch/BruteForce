@@ -13,16 +13,9 @@ public:
 	void Encrypt(const std::string& filePathDest, const std::string& filePathSrc) override;
 	void Decrypt(const std::string& filePathDest, const std::string& filePathSrc) override;
 
-	bool SearchPassword(std::string const& fileSrc) override;
-
-	size_t GetIndex() const;
-
+	
 	// Inherited via IHack
-	virtual void AddToVocab(char from, char to) override;
-	virtual void AddToVocab(std::string const& str) override;
-	virtual void ResetVocab() override;
-	virtual void SetMaxLenOfPassword(size_t sz) override;
-	virtual size_t GetAmount() const override;
+	bool SearchPassword(std::string const& file, std::vector<std::string>& balk) override;
 
 protected:
 	void CalculateHash(const std::vector<unsigned char>& data, std::vector<unsigned char>& hash) override;
@@ -36,6 +29,5 @@ protected:
 
 private:
 	const EVP_MD* m_dgst;
-	PasswordGenerator m_generator;
 };
 

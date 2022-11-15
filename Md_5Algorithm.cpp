@@ -34,46 +34,46 @@ void Md_5Algorithm::Decrypt(const std::string& filePathDest, const std::string& 
     WriteFile(filePathDest, decryptedText);
 }
 
-bool Md_5Algorithm::SearchPassword(std::string const& filePathSrc) {
-    std::vector<unsigned char> chiferText;
-    ReadFile(filePathSrc, chiferText);
-    std::vector<unsigned char> orgiginHash;
-    GetHash(orgiginHash, chiferText);
-    chiferText.erase(chiferText.end() - SHA256_DIGEST_LENGTH, chiferText.end());
-    std::vector<unsigned char> decryptedText;
-   
-    std::vector<std::string> buffer;
-    bool next = true;
-    while (next)
-    {
-        next = m_generator.GetPasswordwordBatch(buffer, 32);
-        if (!next)
-        {
-            continue;
-        }
-        for (auto& key : buffer)
-        {
-            PasswordToKey(key);
-            if (CheckPass(chiferText))
-            {
-                std::vector<unsigned char> hash;
-                DecryptAes(chiferText, decryptedText);
-                CalculateHash(decryptedText, hash);
-                if (orgiginHash == hash)
-                {
-                    SetPassword(key);
-                    return true;
-                }
-            }
-        }
-        buffer.clear();
-    }
-    return false;
-}
+//bool Md_5Algorithm::SearchPassword(std::string const& filePathSrc) {
+//    std::vector<unsigned char> chiferText;
+//    ReadFile(filePathSrc, chiferText);
+//    std::vector<unsigned char> orgiginHash;
+//    GetHash(orgiginHash, chiferText);
+//    chiferText.erase(chiferText.end() - SHA256_DIGEST_LENGTH, chiferText.end());
+//    std::vector<unsigned char> decryptedText;
+//   
+//    std::vector<std::string> buffer;
+//    bool next = true;
+//    while (next)
+//    {
+//        next = m_generator.GetPasswordwordBatch(buffer, 32);
+//        if (!next)
+//        {
+//            continue;
+//        }
+//        for (auto& key : buffer)
+//        {
+//            PasswordToKey(key);
+//            if (CheckPass(chiferText))
+//            {
+//                std::vector<unsigned char> hash;
+//                DecryptAes(chiferText, decryptedText);
+//                CalculateHash(decryptedText, hash);
+//                if (orgiginHash == hash)
+//                {
+//                    SetPassword(key);
+//                    return true;
+//                }
+//            }
+//        }
+//        buffer.clear();
+//    }
+//    return false;
+//}
 
-size_t Md_5Algorithm::GetIndex() const
+bool Md_5Algorithm::SearchPassword(std::string const& file, std::vector<std::string>& balk)
 {
-    return m_generator.GetIndex();
+    return false;
 }
 
 void Md_5Algorithm::CalculateHash(const std::vector<unsigned char>& data, std::vector<unsigned char>& hash) {
@@ -176,27 +176,3 @@ void Md_5Algorithm::GetHash(std::vector<unsigned char>& dest, std::vector<unsign
     std::copy(src.end() - SHA256_DIGEST_LENGTH, src.end(), dest.begin());
 }
 
-size_t Md_5Algorithm::GetAmount() const
-{
-    return m_generator.GetAmount();
-}
-
-void Md_5Algorithm::SetMaxLenOfPassword(size_t sz)
-{
-    m_generator.SetMaxLenOfPassword(sz);
-}
-
-void Md_5Algorithm::AddToVocab(char from, char to)
-{
-    m_generator.AddToVocab(from, to);
-}
-
-void Md_5Algorithm::AddToVocab(std::string const& str)
-{
-    m_generator.AddToVocab(str);
-}
-
-void Md_5Algorithm::ResetVocab()
-{
-    m_generator.Reset();
-}
