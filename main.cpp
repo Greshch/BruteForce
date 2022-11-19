@@ -37,17 +37,28 @@ int main(int argc, char** argv) {
         bool isFound = false;
         auto begin = std::chrono::system_clock::now();
         time_t beginTime = std::chrono::system_clock::to_time_t(begin);
+        time_t const updateTime = 2;
+        bool flag = true;
         while (!isFound)
         {
             generator.GetPasswordwordBatch(balk, volBuffer);
             isFound = algo.SearchPassword(balk);
-            double progress = static_cast<double>(generator.GetIndex()) / generator.GetAmount() * 100.0;
-            /*
-            * 3333 from 10000 passwords checked  [33%]
-                Time elapsed: 1m 35s
-            */
-            std::cout << generator.GetIndex() << " from " << generator.GetAmount() << " passwords " <<
-                " [" << std::round(progress) << "%]" << std::endl;
+
+            auto cur = std::chrono::system_clock::now();
+            auto curTime = std::chrono::system_clock::to_time_t(cur);
+            time_t spendTimeTillBegin = curTime - beginTime;
+
+            if (flag && spendTimeTillBegin && spendTimeTillBegin % updateTime == 0) {
+                double progress = static_cast<double>(generator.GetIndex()) / generator.GetAmount() * 100.0;
+                std::cout << generator.GetIndex() << " from " << generator.GetAmount() << " passwords " <<
+                    " [" << std::round(progress) << "%]" << std::endl;
+                flag = false;
+            }
+            else if (spendTimeTillBegin % updateTime) {
+                flag = true;
+            }
+
+           
             balk.clear();
         }
         auto finish = std::chrono::system_clock::now();
