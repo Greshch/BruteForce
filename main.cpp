@@ -41,14 +41,23 @@ int main(int argc, char** argv) {
         {
             generator.GetPasswordwordBatch(balk, volBuffer);
             isFound = algo.SearchPassword(balk);
+            double progress = static_cast<double>(generator.GetIndex()) / generator.GetAmount() * 100.0;
+            /*
+            * 3333 from 10000 passwords checked  [33%]
+                Time elapsed: 1m 35s
+            */
+            std::cout << generator.GetIndex() << " from " << generator.GetAmount() << " passwords " <<
+                " [" << std::round(progress) << "%]" << std::endl;
             balk.clear();
         }
         auto finish = std::chrono::system_clock::now();
         time_t finishTime = std::chrono::system_clock::to_time_t(finish);
-
-        std::cout << "index: " << generator.GetIndex() << std::endl;
+        auto period = finishTime - beginTime;
+        auto speed = 1.0 * generator.GetIndex() / period;
+        
+        std::cout << "Time elapsed: " << period << "s" << std::endl;
+        std::cout << "Speed: " << std::round(speed) << " pass/sec" << std::endl;
         std::cout << "key: " << algo.GetPassword() << std::endl;
-        std::cout << "time: " << finishTime - beginTime << std::endl;
         algo.Decrypt(nameDecryptedText, nameEncryptedText);
     }
     catch (const std::runtime_error& ex) {
