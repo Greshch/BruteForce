@@ -6,6 +6,11 @@
 #include <exception>
 #include <iostream>
 
+uint64_t timeSinceEpochMillisec() {
+    using namespace std::chrono;
+    return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+}
+
 
 
 int main(int argc, char** argv) {
@@ -29,24 +34,19 @@ int main(int argc, char** argv) {
         generator.AddToVocab('a', 'z');
         generator.AddToVocab('0', '9');
         generator.SetMaxLenOfPassword(maxPasswordLen);
-
         std::vector<std::string>  balk;
-        
         Md_5Algorithm algo;
         algo.PrepearForHack(nameEncryptedText);
         bool isFound = false;
-        auto begin = std::chrono::system_clock::now();
-        time_t beginTime = std::chrono::system_clock::to_time_t(begin);
-        time_t const updateTime = 2;
+        auto beginTime = timeSinceEpochMillisec();
+        time_t const updateTime = 100;
         bool flag = true;
         while (!isFound)
         {
             generator.GetPasswordwordBatch(balk, volBuffer);
             isFound = algo.SearchPassword(balk);
-
-            auto cur = std::chrono::system_clock::now();
-            auto curTime = std::chrono::system_clock::to_time_t(cur);
-            time_t spendTimeTillBegin = curTime - beginTime;
+            auto curTime = timeSinceEpochMillisec();
+            auto spendTimeTillBegin = curTime - beginTime;
 
             if (flag && spendTimeTillBegin && spendTimeTillBegin % updateTime == 0) {
                 double progress = static_cast<double>(generator.GetIndex()) / generator.GetAmount() * 100.0;
@@ -61,13 +61,11 @@ int main(int argc, char** argv) {
            
             balk.clear();
         }
-        auto finish = std::chrono::system_clock::now();
-        time_t finishTime = std::chrono::system_clock::to_time_t(finish);
+        auto finishTime = timeSinceEpochMillisec();
         auto period = finishTime - beginTime;
         auto speed = 1.0 * generator.GetIndex() / period;
-        
-        std::cout << "Time elapsed: " << period << "s" << std::endl;
-        std::cout << "Speed: " << std::round(speed) << " pass/sec" << std::endl;
+        std::cout << "Time elapsed: " << period << " milisec" << std::endl;
+        std::cout << "Speed: " << std::round(speed) << " pass/milisec" << std::endl;
         std::cout << "key: " << algo.GetPassword() << std::endl;
         algo.Decrypt(nameDecryptedText, nameEncryptedText);
     }
