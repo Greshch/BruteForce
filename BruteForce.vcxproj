@@ -156,6 +156,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Md_5Algorithm.cpp" />
     <ClCompile Include="PasswordGenerator.cpp" />
+    <ClCompile Include="TimeWorks.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlgorithmsBase.h" />
@@ -163,6 +164,7 @@
     <ClInclude Include="IHack.h" />
     <ClInclude Include="Md_5Algorithm.h" />
     <ClInclude Include="PasswordGenerator.h" />
+    <ClInclude Include="TimeWorks.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

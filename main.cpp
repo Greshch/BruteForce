@@ -2,62 +2,12 @@
 #include "AlgorithmsBase.h"
 #include "Md_5Algorithm.h"
 #include "FileWorks.h"
-#include <chrono>
+#include "TimeWorks.h"
 #include <memory>
 #include <exception>
 #include <iostream>
 #include <cstring>
 
-uint64_t timeSinceEpochMillisec() {
-    using namespace std::chrono;
-    return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-}
-/*
-#include <Windows.h>
-#include <iostream>
-
-HANDLE mutex = INVALID_HANDLE_VALUE;
-
-DWORD  WINAPI Derived(LPVOID arg) {
-    const char* threadName = static_cast<const char*>(arg);
-    WaitForSingleObject(mutex, INFINITE);
-    for (DWORD i = 0; i < 1000; i++) {
-        std::cout << threadName << " " << i << std::endl;
-
-    }
-    ReleaseMutex(mutex);
-    return 0;
-}
-
-int main() {
-    mutex = CreateMutexA(0, FALSE, 0);
-
-    HANDLE threads[2] = {};
-
-    char firstName[] = "First";
-    threads[0] = CreateThread(
-        0,
-        0,
-        Derived,
-        firstName,
-        0,
-        0
-    );
-
-    char secondName[] = "Second";
-    threads[1] = CreateThread(
-        0,
-        0,
-        Derived,
-        secondName,
-        0,
-        0
-    );
-
-    DWORD status = WaitForMultipleObjects(2, threads, TRUE, INFINITE);
-    // Максимум может ждать 64 потока!!
-}
-*/
 
 
 
@@ -84,7 +34,6 @@ int main(int argc, char** argv) {
                 throw std::runtime_error("Wrong argument error");
             }
             isLog = true;
-            std::cout << ")))" << std::endl;
         }
         std::string nameEncryptedText = argv[1];
         std::string nameDecryptedText = "decrypted_text";
