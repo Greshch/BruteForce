@@ -30,3 +30,22 @@ void AppendToFile(const std::string& filePath, const std::vector<unsigned char>&
     fileStream.write(&buf[0], buf.size());
     fileStream.close();
 }
+
+void AppendToFile(const std::string& filePath, const std::vector<std::string>& balk)
+{
+    static bool isFirst = true;
+    if (isFirst)
+    {
+        std::ofstream file;
+        file.open(filePath);
+        file.close();
+        isFirst = false;
+    }
+    std::basic_ofstream<char> fileStream(filePath, std::ios::app);
+    for (auto const& str : balk)
+    {
+        fileStream.write(str.c_str(), str.size());
+        fileStream.write("\n", 1);
+    }
+    fileStream.close();
+}
