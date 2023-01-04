@@ -7,7 +7,69 @@
 #include <exception>
 #include <iostream>
 #include <cstring>
+#include <condition_variable>
 
+void Batcher(std::condition_variable& cv, PasswordGenerator& generator, 
+    std::vector<std::string>&  balk, size_t const volBuffer,  std::atomic_bool& flag)
+{
+    while (flag == false)
+    {
+        /*std::cout << "Do you want to log: ";
+        char ch;
+        std::cin >> ch;
+        std::cin.clear();
+        if (ch == 'y')
+        {
+            flag = true;
+            cv.notify_one();
+        }
+        else if (ch == 'n')
+        {
+            flag = false;
+        }*/
+        generator.GetPasswordwordBatch(balk, volBuffer);
+        cv.notify_all();
+    }
+}
+
+void Search(std::condition_variable& cv, std::mutex& mtx, std::atomic_bool& flag,
+    Md_5Algorithm& algo,
+    std::vector<std::string>& balk, size_t const from, size_t const to)
+{
+    /*static int cnt = 0;
+    std::ofstream log;
+    std::string msg;
+    while (true)
+    {
+        std::unique_lock<std::mutex> uniLock(mtx);
+        cv.wait(uniLock, [&flag]() { return flag; });
+
+        log.open("log.log", std::ios_base::app);
+        msg = "Logger: " + std::to_string(++cnt) + "\n";
+        log.write(msg.c_str(), msg.length());
+
+        log.close();
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(300));
+    }*/
+
+    std::vector<std::string> semiBalk(1024);
+
+    while (true)
+    {
+        std::unique_lock<std::mutex> uniLock(mtx);
+        cv.wait(uniLock, [&flag]() { return flag; });
+
+        semiBalk.clear();
+        std::copy(balk.begin() + from, balk.begin() + to, semiBalk.begin());
+        balk.clear();
+        flag = algo.SearchPassword(balk);
+        if (flag)
+        {
+            break;
+        }
+    }
+}
 
 
 
@@ -45,6 +107,8 @@ int main(int argc, char** argv) {
         std::vector<std::string>  balk;
         Md_5Algorithm algo;
         algo.PrepearForHack(nameEncryptedText);
+       
+       /* 
         bool isFound = false;
         auto beginTime = timeSinceEpochMillisec();
         time_t const updateTime = 100;
@@ -81,6 +145,13 @@ int main(int argc, char** argv) {
         std::cout << "Speed: " << std::round(speed) << " pass/milisec" << std::endl;
         std::cout << "key: " << algo.GetPassword() << std::endl;
         algo.Decrypt(nameDecryptedText, nameEncryptedText);
+        */
+
+        std::condition_variable cv;
+        std::mutex mtx;
+        std::atomic_bool isFound = false;
+
+        std::thread th1(Batcher, );
     }
     catch (const std::runtime_error& ex) {
         std::cerr << ex.what();
