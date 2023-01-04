@@ -58,7 +58,7 @@ void Search(std::condition_variable& cv, std::mutex& mtx, std::atomic_bool& flag
     while (true)
     {
         std::unique_lock<std::mutex> uniLock(mtx);
-        cv.wait(uniLock, [&flag]() { return flag; });
+        cv.wait(uniLock, [&flag]() { return flag == true; });
 
         semiBalk.clear();
         std::copy(balk.begin() + from, balk.begin() + to, semiBalk.begin());
@@ -151,7 +151,7 @@ int main(int argc, char** argv) {
         std::mutex mtx;
         std::atomic_bool isFound = false;
 
-        std::thread th1(Batcher, );
+        //std::thread th1(Batcher, );
     }
     catch (const std::runtime_error& ex) {
         std::cerr << ex.what();
