@@ -9,32 +9,32 @@
 #include <cstring>
 #include <condition_variable>
 
-void Batcher(std::condition_variable& cv, PasswordGenerator& generator, 
-    std::vector<std::string>&  balk, size_t const volBuffer,  std::atomic_bool& flag)
+void Batcher(std::condition_variable& cv, 
+    PasswordGenerator& generator, 
+    std::vector<std::string>&  balk,
+    size_t const volBuffer,
+    std::atomic_bool& generated,
+    std::atomic_bool& found
+)
 {
-    while (flag == false)
+    while (!found)
     {
-        /*std::cout << "Do you want to log: ";
-        char ch;
-        std::cin >> ch;
-        std::cin.clear();
-        if (ch == 'y')
-        {
-            flag = true;
-            cv.notify_one();
-        }
-        else if (ch == 'n')
-        {
-            flag = false;
-        }*/
         generator.GetPasswordwordBatch(balk, volBuffer);
+        generated = true;
         cv.notify_all();
     }
 }
 
-void Search(std::condition_variable& cv, std::mutex& mtx, std::atomic_bool& flag,
+void Search(
+    std::condition_variable& cv, 
+    std::mutex& mtx, 
     Md_5Algorithm& algo,
-    std::vector<std::string>& balk, size_t const from, size_t const to)
+    std::vector<std::string>& balk, 
+    size_t const from, 
+    size_t const to,
+    std::atomic_bool& generated,
+    std::atomic_bool& found
+)
 {
     /*static int cnt = 0;
     std::ofstream log;
@@ -58,13 +58,13 @@ void Search(std::condition_variable& cv, std::mutex& mtx, std::atomic_bool& flag
     while (true)
     {
         std::unique_lock<std::mutex> uniLock(mtx);
-        cv.wait(uniLock, [&flag]() { return flag == true; });
+        cv.wait(uniLock, [&generated]() { return generated == true; });
 
         semiBalk.clear();
         std::copy(balk.begin() + from, balk.begin() + to, semiBalk.begin());
         balk.clear();
-        flag = algo.SearchPassword(balk);
-        if (flag)
+        found = algo.SearchPassword(balk);
+        if (found)
         {
             break;
         }
@@ -150,8 +150,36 @@ int main(int argc, char** argv) {
         std::condition_variable cv;
         std::mutex mtx;
         std::atomic_bool isFound = false;
+        std::atomic_bool generated = false;
 
-        //std::thread th1(Batcher, );
+        std::thread th1(
+            Batcher, 
+            std::ref(cv),
+            std::ref(generator),
+            std::ref(balk),
+            volBuffer,
+            std::ref(generated),
+            std::ref(isFound)
+        );
+
+        std::thread th2(
+            Search,
+            std::ref(cv),
+            std::ref(mtx),
+            std::ref(algo),
+            std::ref(balk),
+            0,
+            volBuffer,
+            std::ref(generated),
+            std::ref(isFound)
+        );
+
+        th1.join();
+        th2.join();
+        if (isFound)
+        {
+            std::cout << "####\n";
+        }
     }
     catch (const std::runtime_error& ex) {
         std::cerr << ex.what();
