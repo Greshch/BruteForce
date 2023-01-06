@@ -152,7 +152,7 @@ int main(int argc, char** argv) {
         std::atomic_bool isFound = false;
         std::atomic_bool generated = false;
 
-        std::thread th1(
+        /*std::thread th1(
             Batcher, 
             std::ref(cv),
             std::ref(generator),
@@ -175,10 +175,45 @@ int main(int argc, char** argv) {
         );
 
         th1.join();
-        th2.join();
+        th2.join();*/
+
+        auto start = timeSinceEpochMillisec();
+
+        std::thread batcher([&]()
+            {
+                while (!isFound && generator.GetIndex() < generator.GetAmount())
+                {
+                    balk.clear();
+                    generator.GetPasswordwordBatch(balk, volBuffer);
+                    generated = true;
+                    cv.notify_all();
+                    std::this_thread::sleep_for(std::chrono::milliseconds(8));
+                }
+            }
+        );
+        
+        std::thread searcher([&]()
+            {
+                while (true)
+                {
+                    std::unique_lock<std::mutex> uniLock(mtx);
+                    cv.wait(uniLock, [&generated]() { return generated == true; });
+                    isFound = algo.SearchPassword(balk);
+                    if (isFound)
+                    {
+                        break;
+                    }
+                }
+            }
+        );
+
+        batcher.join();
+        searcher.detach();
+
         if (isFound)
         {
-            std::cout << "####\n";
+            auto period = timeSinceEpochMillisec() - start;
+            std::cout << "Time elapsed: " << period << " milisec" << std::endl;
         }
     }
     catch (const std::runtime_error& ex) {
