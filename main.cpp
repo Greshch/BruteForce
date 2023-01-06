@@ -9,69 +9,6 @@
 #include <cstring>
 #include <condition_variable>
 
-void Batcher(std::condition_variable& cv, 
-    PasswordGenerator& generator, 
-    std::vector<std::string>&  balk,
-    size_t const volBuffer,
-    std::atomic_bool& generated,
-    std::atomic_bool& found
-)
-{
-    while (!found)
-    {
-        generator.GetPasswordwordBatch(balk, volBuffer);
-        generated = true;
-        cv.notify_all();
-    }
-}
-
-void Search(
-    std::condition_variable& cv, 
-    std::mutex& mtx, 
-    Md_5Algorithm& algo,
-    std::vector<std::string>& balk, 
-    size_t const from, 
-    size_t const to,
-    std::atomic_bool& generated,
-    std::atomic_bool& found
-)
-{
-    /*static int cnt = 0;
-    std::ofstream log;
-    std::string msg;
-    while (true)
-    {
-        std::unique_lock<std::mutex> uniLock(mtx);
-        cv.wait(uniLock, [&flag]() { return flag; });
-
-        log.open("log.log", std::ios_base::app);
-        msg = "Logger: " + std::to_string(++cnt) + "\n";
-        log.write(msg.c_str(), msg.length());
-
-        log.close();
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(300));
-    }*/
-
-    std::vector<std::string> semiBalk(1024);
-
-    while (true)
-    {
-        std::unique_lock<std::mutex> uniLock(mtx);
-        cv.wait(uniLock, [&generated]() { return generated == true; });
-
-        semiBalk.clear();
-        std::copy(balk.begin() + from, balk.begin() + to, semiBalk.begin());
-        balk.clear();
-        found = algo.SearchPassword(balk);
-        if (found)
-        {
-            break;
-        }
-    }
-}
-
-
 
 int main(int argc, char** argv) {
     //std::string foldersPath = "D:/projects/cplus/Apriorit/second/BruteForce/";
@@ -104,7 +41,7 @@ int main(int argc, char** argv) {
         generator.AddToVocab('a', 'z');
         generator.AddToVocab('0', '9');
         generator.SetMaxLenOfPassword(maxPasswordLen);
-        std::vector<std::string>  balk;
+        std::vector<std::string>  balk(volBuffer);
         Md_5Algorithm algo;
         algo.PrepearForHack(nameEncryptedText);
        
@@ -151,6 +88,10 @@ int main(int argc, char** argv) {
         std::mutex mtx;
         std::atomic_bool isFound = false;
         std::atomic_bool generated = false;
+        std::atomic_bool checked = false;
+
+        std::vector<std::string> leftHalf(volBuffer / 2);
+        std::vector<std::string> rightHalf(volBuffer / 2);
 
         /*std::thread th1(
             Batcher, 
@@ -184,10 +125,21 @@ int main(int argc, char** argv) {
                 while (!isFound && generator.GetIndex() < generator.GetAmount())
                 {
                     balk.clear();
-                    generator.GetPasswordwordBatch(balk, volBuffer);
+
+                    /*leftHalf.clear();
+                    rightHalf.clear();*/
+                    if (checked)
+                    {
+                        generator.GetPasswordwordBatch(balk, volBuffer);
+                    }
+                    
+
+                    /*std::copy(balk.begin(), balk.begin() + volBuffer / 2, std::back_inserter(leftHalf));
+                    std::copy(balk.begin() + volBuffer / 2 + 1, balk.end(), std::back_inserter(rightHalf));*/
+
                     generated = true;
                     cv.notify_all();
-                    std::this_thread::sleep_for(std::chrono::milliseconds(8));
+                    //std::this_thread::sleep_for(std::chrono::microseconds(10));
                 }
             }
         );
@@ -198,7 +150,25 @@ int main(int argc, char** argv) {
                 {
                     std::unique_lock<std::mutex> uniLock(mtx);
                     cv.wait(uniLock, [&generated]() { return generated == true; });
+                    checked = false;
                     isFound = algo.SearchPassword(balk);
+                    if (isFound)
+                    {
+                        break;
+                    }
+                    checked = true;
+                }
+            }
+        );
+
+        /*std::thread searcherLeft([&]()
+            {
+                while (true)
+                {
+                    std::unique_lock<std::mutex> uniLock(mtx);
+                    cv.wait(uniLock, [&generated]() { return generated == true; });
+                    isFound = algo.SearchPassword(leftHalf);
+
                     if (isFound)
                     {
                         break;
@@ -206,6 +176,22 @@ int main(int argc, char** argv) {
                 }
             }
         );
+
+        std::thread searcherRight([&]()
+            {
+                while (true)
+                {
+                    std::unique_lock<std::mutex> uniLock(mtx);
+                    cv.wait(uniLock, [&generated]() { return generated == true; });
+                    isFound = algo.SearchPassword(rightHalf);
+
+                    if (isFound)
+                    {
+                        break;
+                    }
+                }
+            }
+        );*/
 
         batcher.join();
         searcher.detach();
