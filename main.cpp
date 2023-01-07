@@ -87,14 +87,14 @@ int main(int argc, char** argv) {
         std::condition_variable cv;
         std::mutex mtx;
         std::atomic_bool isFound = false;
-        std::atomic_bool generated = false;
-        std::atomic_bool checked = false;
+        //std::atomic_bool generated = false;
+        std::atomic_bool checked = true;
 
-        std::atomic_bool leftchecked = false;
+        /*std::atomic_bool leftchecked = false;
         std::atomic_bool rightchecked = false;
 
         std::vector<std::string> leftHalf(volBuffer / 2);
-        std::vector<std::string> rightHalf(volBuffer / 2);
+        std::vector<std::string> rightHalf(volBuffer / 2);*/
 
         /*std::thread th1(
             Batcher, 
@@ -125,21 +125,23 @@ int main(int argc, char** argv) {
 
         std::thread batcher([&]()
             {
-                while (!isFound && generator.GetIndex() < generator.GetAmount())
+                //std::cout << "#batcher\n";
+                while (true)
                 {
-                    balk.clear();
-
-                    if (checked)
-                    {
-                        generator.GetPasswordwordBatch(balk, volBuffer);
-                    }
+                    std::cout << "#batcher\n";
+                    std::unique_lock<std::mutex> uniLock(mtx);
+                    cv.wait(uniLock, [&checked]() { return checked == true; });
                     
+                    checked = false;
 
-                    /*std::copy(balk.begin(), balk.begin() + volBuffer / 2, std::back_inserter(leftHalf));
-                    std::copy(balk.begin() + volBuffer / 2 + 1, balk.end(), std::back_inserter(rightHalf));*/
+                    balk.clear();
+                    generator.GetPasswordwordBatch(balk, volBuffer);
 
-                    generated = true;
-                    cv.notify_all();
+                    if (isFound)
+                    {
+                        //isFound = true;
+                        break;
+                    }
                 }
             }
         );
@@ -148,11 +150,13 @@ int main(int argc, char** argv) {
             {
                 while (!isFound)
                 {
-                    std::unique_lock<std::mutex> uniLock(mtx);
-                    cv.wait(uniLock, [&generated]() { return generated == true; });
-                    checked = false;
+                    std::this_thread::yield();
+                    //std::cout << "searcher\n";
+                    //checked = false;
                     isFound = algo.SearchPassword(balk);
                     checked = true;
+                    cv.notify_one();
+                    std::this_thread::sleep_for(std::chrono::microseconds(16));
                 }
             }
         );
