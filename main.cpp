@@ -153,7 +153,7 @@ int main(int argc, char** argv) {
                     std::this_thread::yield();
                     //std::cout << "searcher\n";
                     //checked = false;
-                    isFound = algo.SearchPassword(balk);
+                    isFound = algo.SearchPassword(balk, 0, balk.size());
                     checked = true;
                     cv.notify_one();
                     std::this_thread::sleep_for(std::chrono::microseconds(16));
