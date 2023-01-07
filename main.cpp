@@ -128,7 +128,7 @@ int main(int argc, char** argv) {
                 //std::cout << "#batcher\n";
                 while (true)
                 {
-                    std::cout << "#batcher\n";
+                    //std::cout << "#batcher\n";
                     std::unique_lock<std::mutex> uniLock(mtx);
                     cv.wait(uniLock, [&checked]() { return checked == true; });
                     
@@ -153,7 +153,7 @@ int main(int argc, char** argv) {
                     std::this_thread::yield();
                     //std::cout << "searcher\n";
                     //checked = false;
-                    isFound = algo.SearchPassword(balk, 0, balk.size());
+                    isFound = algo.SearchPassword(balk);
                     checked = true;
                     cv.notify_one();
                     std::this_thread::sleep_for(std::chrono::microseconds(16));
@@ -161,45 +161,8 @@ int main(int argc, char** argv) {
             }
         );
 
-        /*std::thread searcherLeft([&]()
-            {
-                while (true)
-                {
-                    std::unique_lock<std::mutex> uniLock(mtx);
-                    cv.wait(uniLock, [&generated]() { return generated == true; });
-                    leftchecked = false;
-                    isFound = algo.SearchPassword(leftHalf);
-                    if (isFound)
-                    {
-                        break;
-                    }
-                    leftchecked = true;
-                }
-            }
-        );*/
-
-        /*std::thread searcherRight([&]()
-            {
-                while (true)
-                {
-                    std::unique_lock<std::mutex> uniLock(mtx);
-                    cv.wait(uniLock, [&generated]() { return generated == true; });
-                    rightchecked = false;
-                    isFound = algo.SearchPassword(rightHalf);
-                    if (isFound)
-                    {
-                        break;
-                    }
-                    rightchecked = true;
-                }
-            }
-        );*/
-
         batcher.join();
         searcher.join();
-        
-        /*searcherLeft.detach();
-        searcherRight.detach();*/
 
         if (isFound)
         {
