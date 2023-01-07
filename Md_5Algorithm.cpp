@@ -154,3 +154,22 @@ void Md_5Algorithm::GetHash(std::vector<unsigned char>& dest, std::vector<unsign
     std::copy(src.end() - SHA256_DIGEST_LENGTH, src.end(), dest.begin());
 }
 
+bool Md_5Algorithm::SearchPassword(std::vector<std::string>& balk, size_t from, size_t to)
+{
+    for (size_t i = from; i < to; ++i)
+    {
+        PasswordToKey(balk[i]);
+        if (CheckPass(m_chiferText))
+        {
+            DecryptAes(m_chiferText, m_decryptedText);
+            CalculateHash(m_decryptedText, m_curHash);
+            if (m_originHash == m_curHash)
+            {
+                SetPassword(balk[i]);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+

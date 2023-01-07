@@ -204,6 +204,8 @@ int main(int argc, char** argv) {
         if (isFound)
         {
             auto period = timeSinceEpochMillisec() - start;
+            std::cout << "key: " << algo.GetPassword() << std::endl;
+            algo.Decrypt(nameDecryptedText, nameEncryptedText);
             std::cout << "Time elapsed: " << period << " milisec" << std::endl;
         }
     }
